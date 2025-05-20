@@ -1,3 +1,5 @@
+//esta clase carga los datos desde un archivo .txt y los transforma en una lista de objetos Vehiculo
+
 package utils;
 
 import java.io.BufferedReader;
@@ -9,7 +11,7 @@ import model.Vehiculo;
 
 public class LectorVehiculos {
     
-    public static List<Vehiculo> leerVehiculosDesdeArchivo(String rutaArchivo){
+    public static List<Vehiculo> cargarVehiculos(String rutaArchivo){
         List<Vehiculo> lista = new ArrayList<>();
         
         try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))){

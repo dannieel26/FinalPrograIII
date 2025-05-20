@@ -1,7 +1,11 @@
 package datastructures;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ArbolBinarioBusqueda <T extends Comparable<T>> {
     
+    //Nodo del arbol como clase privada
     private class Nodo{
         T dato;
         Nodo izquierdo;
@@ -57,17 +61,46 @@ public class ArbolBinarioBusqueda <T extends Comparable<T>> {
             return buscarRecursivo(actual.derecho, dato);
         }
     }
-
-    // Método para recorrido In-Orden (opcional para visualizar datos)
-    public void inOrden() {
-        inOrdenRecursivo(raiz);
+    
+    public List<T> inorden() {
+        List<T> resultado = new ArrayList<>();
+        inordenRecursivo(raiz, resultado);
+        return resultado;
     }
 
-    private void inOrdenRecursivo(Nodo actual) {
-        if (actual != null) {
-            inOrdenRecursivo(actual.izquierdo);
-            System.out.println(actual.dato.toString());
-            inOrdenRecursivo(actual.derecho);
+    private void inordenRecursivo(Nodo nodo, List<T> resultado) {
+        if (nodo != null) {
+            inordenRecursivo(nodo.izquierdo, resultado);
+            resultado.add(nodo.dato);
+            inordenRecursivo(nodo.derecho, resultado);
+        }
+    }
+    
+    public List<T> preorden() {
+        List<T> resultado = new ArrayList<>();
+        preordenRecursivo(raiz, resultado);
+        return resultado;
+    }
+
+    private void preordenRecursivo(Nodo nodo, List<T> resultado) {
+        if (nodo != null) {
+            resultado.add(nodo.dato);
+            preordenRecursivo(nodo.izquierdo, resultado);
+            preordenRecursivo(nodo.derecho, resultado);
+        }
+    }
+    
+    public List<T> postorden() {
+        List<T> resultado = new ArrayList<>();
+        postordenRecursivo(raiz, resultado);
+        return resultado;
+    }
+
+    private void postordenRecursivo(Nodo nodo, List<T> resultado) {
+        if (nodo != null) {
+            postordenRecursivo(nodo.izquierdo, resultado);
+            postordenRecursivo(nodo.derecho, resultado);
+            resultado.add(nodo.dato);
         }
     }
 }
