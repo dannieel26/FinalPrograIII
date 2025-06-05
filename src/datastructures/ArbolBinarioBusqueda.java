@@ -31,11 +31,11 @@ public class ArbolBinarioBusqueda <T extends Comparable<T>> {
         int comparacion = dato.compareTo(actual.dato);
 
         if (comparacion < 0) {
-            actual.izquierdo = insertarRecursivo(actual.izquierdo, dato);
+            actual.izquierdo = insertarRecursivo(actual.izquierdo, dato); //si es menor
         } else if (comparacion > 0) {
-            actual.derecho = insertarRecursivo(actual.derecho, dato);
+            actual.derecho = insertarRecursivo(actual.derecho, dato); //si es mayor
         } else {
-            // Si es igual ignoramos.
+            actual.derecho = insertarRecursivo(actual.derecho, dato); //si es igual (se permite duplicado)
         }
 
         return actual;
