@@ -2,6 +2,7 @@ package datastructures;
 
 import java.util.ArrayList;
 import java.util.List;
+import model.Vehiculo;
 
 public class ArbolBinarioBusqueda <T extends Comparable<T>> {
     
@@ -59,6 +60,27 @@ public class ArbolBinarioBusqueda <T extends Comparable<T>> {
             return buscarRecursivo(actual.izquierdo, dato);
         } else {
             return buscarRecursivo(actual.derecho, dato);
+        }
+    }
+    
+    public List<T> buscarPorSubcadena(String subcadena) {
+        List<T> coincidencias = new ArrayList<>();
+        buscarPorSubcadenaRecursivo(raiz, subcadena.toLowerCase(), coincidencias);
+        return coincidencias;
+    }
+
+    private void buscarPorSubcadenaRecursivo(Nodo nodo, String subcadena, List<T> lista) {
+        if (nodo != null) {
+            buscarPorSubcadenaRecursivo(nodo.izquierdo, subcadena, lista);
+
+            // Asumimos que T es Vehiculo, podrías validar o castear si fuera necesario
+            if (nodo.dato instanceof Vehiculo v) {
+                if (v.getPlaca().toLowerCase().contains(subcadena)) {
+                    lista.add(nodo.dato);
+                }
+            }
+
+            buscarPorSubcadenaRecursivo(nodo.derecho, subcadena, lista);
         }
     }
     

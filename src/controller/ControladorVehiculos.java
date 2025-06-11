@@ -27,6 +27,11 @@ public class ControladorVehiculos {
         tiempoInsercion += (fin - inicio); // acumulativo si se cargan varios archivos
     }
     
+    //metodo que permite buscar desde la interfaz sin acceder directamente al árbol
+    public List<Vehiculo> buscarVehiculosPorPlaca(String subcadena) {
+        return arbol.buscarPorSubcadena(subcadena);
+    }
+    
     public List<Vehiculo> obtenerVehiculosInorden() {
         return arbol.inorden(); //llama directamente al árbol para obtener la lista de vehículos en el orden solicitado
     }

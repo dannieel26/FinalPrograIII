@@ -6,6 +6,7 @@ import javax.swing.table.DefaultTableModel;
 import model.Vehiculo;
 import controller.ControladorVehiculos;
 import java.awt.CardLayout;
+import javax.swing.JOptionPane;
 
 public class VentanaPrincipal extends javax.swing.JFrame {
     
@@ -24,7 +25,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         inicializarCombos();
         setLocationRelativeTo(null);
         setTitle("SIRVE | Sistema Inteligente de Registro de Vehículos y Evaluación");
-                panelPrincipal.removeAll(); //por el momento en construccion
+        panelPrincipal.removeAll(); //por el momento en construccion
         panelPrincipal.revalidate();
         panelPrincipal.repaint();
     }
@@ -43,8 +44,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jComboBoxDepartamentos = new javax.swing.JComboBox<>();
         jComboBoxTipoArbol = new javax.swing.JComboBox<>();
         jComboBoxRecorrido = new javax.swing.JComboBox<>();
+        jTextFieldBuscarVehiculo = new javax.swing.JTextField();
+        jButtonBuscarVehiculo = new javax.swing.JButton();
         jButtonLimpiarTabla = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
+        jPanelTiempos = new javax.swing.JPanel();
         jLabelTiempoInsercion = new javax.swing.JLabel();
         jLabelTiempoRecorrido = new javax.swing.JLabel();
         cardPanel = new javax.swing.JPanel();
@@ -108,8 +111,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         menuSuperior.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 10));
 
         jComboBoxDepartamentos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos los departamentos" }));
+        jComboBoxDepartamentos.setMaximumSize(new java.awt.Dimension(0, 0));
+        jComboBoxDepartamentos.setMinimumSize(null);
         jComboBoxDepartamentos.setName(""); // NOI18N
-        jComboBoxDepartamentos.setPreferredSize(new java.awt.Dimension(189, 35));
+        jComboBoxDepartamentos.setPreferredSize(new java.awt.Dimension(180, 35));
         jComboBoxDepartamentos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxDepartamentosActionPerformed(evt);
@@ -117,8 +122,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
         menuSuperior.add(jComboBoxDepartamentos);
 
-        jComboBoxTipoArbol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione el tipo de arbol" }));
-        jComboBoxTipoArbol.setPreferredSize(new java.awt.Dimension(176, 35));
+        jComboBoxTipoArbol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tipo de arbol" }));
+        jComboBoxTipoArbol.setMaximumSize(null);
+        jComboBoxTipoArbol.setMinimumSize(null);
+        jComboBoxTipoArbol.setPreferredSize(new java.awt.Dimension(120, 35));
         jComboBoxTipoArbol.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxTipoArbolActionPerformed(evt);
@@ -126,14 +133,25 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
         menuSuperior.add(jComboBoxTipoArbol);
 
-        jComboBoxRecorrido.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione el recorrido" }));
-        jComboBoxRecorrido.setPreferredSize(new java.awt.Dimension(157, 35));
+        jComboBoxRecorrido.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Recorrido" }));
+        jComboBoxRecorrido.setPreferredSize(new java.awt.Dimension(120, 35));
         jComboBoxRecorrido.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxRecorridoActionPerformed(evt);
             }
         });
         menuSuperior.add(jComboBoxRecorrido);
+
+        jTextFieldBuscarVehiculo.setPreferredSize(new java.awt.Dimension(70, 26));
+        menuSuperior.add(jTextFieldBuscarVehiculo);
+
+        jButtonBuscarVehiculo.setText("Buscar");
+        jButtonBuscarVehiculo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBuscarVehiculoActionPerformed(evt);
+            }
+        });
+        menuSuperior.add(jButtonBuscarVehiculo);
 
         jButtonLimpiarTabla.setText("Limpiar tabla");
         jButtonLimpiarTabla.setPreferredSize(new java.awt.Dimension(103, 35));
@@ -144,16 +162,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
         menuSuperior.add(jButtonLimpiarTabla);
 
-        jPanel1.setPreferredSize(new java.awt.Dimension(184, 35));
-        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.PAGE_AXIS));
+        jPanelTiempos.setPreferredSize(new java.awt.Dimension(180, 35));
+        jPanelTiempos.setLayout(new javax.swing.BoxLayout(jPanelTiempos, javax.swing.BoxLayout.PAGE_AXIS));
+        jPanelTiempos.add(jLabelTiempoInsercion);
+        jPanelTiempos.add(jLabelTiempoRecorrido);
 
-        jLabelTiempoInsercion.setText("Tiempo inserción");
-        jPanel1.add(jLabelTiempoInsercion);
-
-        jLabelTiempoRecorrido.setText("Tiempo recorrido");
-        jPanel1.add(jLabelTiempoRecorrido);
-
-        menuSuperior.add(jPanel1);
+        menuSuperior.add(jPanelTiempos);
 
         panelPrincipal.add(menuSuperior, java.awt.BorderLayout.NORTH);
 
@@ -264,6 +278,31 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         realizarRecorridoYMostrarTabla();
     }//GEN-LAST:event_jComboBoxRecorridoActionPerformed
 
+    private void jButtonBuscarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarVehiculoActionPerformed
+        String textoBusqueda = jTextFieldBuscarVehiculo.getText().trim();
+
+        if (textoBusqueda.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese al menos una parte de la placa para buscar.");
+            return;
+        }
+
+        long inicioBusqueda = System.nanoTime(); // ⏱️ Inicia cronómetro
+        List<Vehiculo> resultados = controlador.buscarVehiculosPorPlaca(textoBusqueda);
+        long finBusqueda = System.nanoTime(); // ⏱️ Termina cronómetro
+
+        double tiempoMilisBusqueda = (finBusqueda - inicioBusqueda) / 1_000_000.0;
+
+        if (resultados.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No se encontraron vehículos con esa placa.");
+        } else {
+            llenarTabla(resultados); // Reutilizamos el método que ya muestra datos en la tabla
+        }
+
+        // Muestra el tiempo en el primer campo y deja el segundo en blanco
+        jLabelTiempoInsercion.setText(String.format("Tiempo de búsqueda: %.3f ms", tiempoMilisBusqueda));
+        jLabelTiempoRecorrido.setText(""); // Limpiar el segundo campo
+    }//GEN-LAST:event_jButtonBuscarVehiculoActionPerformed
+
     // Realiza el recorrido seleccionado y actualiza la tabla con los resultados
     private void realizarRecorridoYMostrarTabla() {
         // Asegura que se haya seleccionado un recorrido y que el tipo de árbol sea válido
@@ -327,12 +366,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         // ComboBox para tipo de árbol
         jComboBoxTipoArbol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
-            "Seleccione el tipo de arbol", "Binario", "AVL"
+            "Tipo de arbol", "Binario", "AVL"
         }));
 
         // ComboBox para recorrido
         jComboBoxRecorrido.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
-            "Seleccione el recorrido", "Inorden", "Preorden", "Postorden"
+            "Recorrido", "Inorden", "Preorden", "Postorden"
         }));
 
         // Selección por defecto
@@ -405,6 +444,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel cardPanel;
     private javax.swing.JPanel cardVehiculosABB;
+    private javax.swing.JButton jButtonBuscarVehiculo;
     private javax.swing.JButton jButtonLimpiarTabla;
     private javax.swing.JButton jButtonMultas;
     private javax.swing.JButton jButtonTraspasos;
@@ -415,9 +455,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelTiempoInsercion;
     private javax.swing.JLabel jLabelTiempoRecorrido;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanelTiempos;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableVehiculos;
+    private javax.swing.JTextField jTextFieldBuscarVehiculo;
     private javax.swing.JPanel menuLateral;
     private javax.swing.JPanel menuSuperior;
     private javax.swing.JPanel panelPrincipal;
