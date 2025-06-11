@@ -9,6 +9,7 @@ import utils.LectorVehiculos;
 
 public class ControladorVehiculos {
     private ArbolBinarioBusqueda arbol;
+    private long tiempoInsercion;
     
     public ControladorVehiculos() {
         arbol = new ArbolBinarioBusqueda();
@@ -17,9 +18,13 @@ public class ControladorVehiculos {
     public void cargarVehiculosDesdeArchivo(String ruta) {
         //Usa la clase LectorVehiculos para leer los vehiculos desde el archivo
         List<Vehiculo> vehiculos = LectorVehiculos.cargarVehiculos(ruta);
+        
+        long inicio = System.nanoTime(); // Inicio (mediciond e tiempo)
         for (Vehiculo v : vehiculos) {
             arbol.insertar(v); //Inserta cada vehiculo en el árbol binario
         }
+        long fin = System.nanoTime(); //Fin
+        tiempoInsercion += (fin - inicio); // acumulativo si se cargan varios archivos
     }
     
     public List<Vehiculo> obtenerVehiculosInorden() {
@@ -37,5 +42,10 @@ public class ControladorVehiculos {
     //reinicia el árbol, eliminando todos los datos actuales
     public void limpiarDatos() {
         arbol = new ArbolBinarioBusqueda();
+        tiempoInsercion = 0;
+    }
+    
+    public long getTiempoInsercion(){
+        return tiempoInsercion;
     }
 }
