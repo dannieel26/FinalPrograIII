@@ -63,6 +63,7 @@ public class ArbolBinarioBusqueda <T extends Comparable<T>> {
         }
     }
     
+    //método para buscar por coincidencias
     public List<T> buscarPorSubcadena(String subcadena) {
         List<T> coincidencias = new ArrayList<>();
         buscarPorSubcadenaRecursivo(raiz, subcadena.toLowerCase(), coincidencias);
