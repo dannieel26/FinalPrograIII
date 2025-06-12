@@ -68,6 +68,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jComboBoxDepartamentoInsertar = new javax.swing.JComboBox<>();
         jButtonInsertarVehiculo = new javax.swing.JButton();
+        jButtonRegresarInsertar = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jLabelInsertarMensajes = new javax.swing.JLabel();
 
@@ -285,6 +286,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
         jPanel5.add(jButtonInsertarVehiculo);
 
+        jButtonRegresarInsertar.setText("Regresar");
+        jButtonRegresarInsertar.setPreferredSize(new java.awt.Dimension(100, 40));
+        jButtonRegresarInsertar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRegresarInsertarActionPerformed(evt);
+            }
+        });
+        jPanel5.add(jButtonRegresarInsertar);
+
         jPanel4.add(jPanel5, java.awt.BorderLayout.NORTH);
 
         jPanel6.add(jLabelInsertarMensajes);
@@ -426,71 +436,63 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     // Método que se ejecuta al presionar el botón de "Insertar Vehiculo"
     private void jButtonInsertarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertarVehiculoActionPerformed
-        int fila = 0; // Se utiliza solo una fila de la tabla para ingresar los datos del vehículo
-
-        // Obtener el modelo de la tabla donde el usuario ingresó los datos
-        DefaultTableModel modelo = (DefaultTableModel) jTableInsertarVehiculo.getModel();
-
-        // Validar que la tabla tenga al menos una fila con datos en la primera columna
-        if (modelo.getRowCount() == 0 || modelo.getValueAt(fila, 0) == null) {
-            jLabelInsertarMensajes.setText("Debe ingresar los datos en la tabla antes de insertar.");
-            return; // Salir del método si no hay datos
-        }
-
-        //fora para validar que todos los campos de la fila estén completos (no vacíos ni nulos)
-        for (int i = 0; i < modelo.getColumnCount(); i++) {
-            Object valor = modelo.getValueAt(fila, i);
-            if (valor == null || valor.toString().trim().isEmpty()) {
-                jLabelInsertarMensajes.setText("Debe completar todos los campos antes de insertar.");
-                return; // Salir si falta algún campo
-            }
-        }
+        int fila = 0; //es la unica fila donde se insertan los datos
         
-        // Extraer los valores de la fila ingresada y convertirlos a los tipos adecuados
-        try {
-            String placa = modelo.getValueAt(fila, 0).toString().trim();
-            String dpi = modelo.getValueAt(fila, 1).toString().trim();
-            String nombre = modelo.getValueAt(fila, 2).toString().trim();
-            String marca = modelo.getValueAt(fila, 3).toString().trim();
-            String modeloVehiculo = modelo.getValueAt(fila, 4).toString().trim();
-            int anio = Integer.parseInt(modelo.getValueAt(fila, 5).toString().trim());
-            int multas = Integer.parseInt(modelo.getValueAt(fila, 6).toString().trim());
-            int traspasos = Integer.parseInt(modelo.getValueAt(fila, 7).toString().trim());
+        // Obtiene el modelo de la tabla donde se ingresan los datos del nuevo vehículo
+        DefaultTableModel modelo = (DefaultTableModel) jTableInsertarVehiculo.getModel();
+        String departamento = (jComboBoxDepartamentoInsertar.getSelectedIndex() > 0)
+                // Obtiene el departamento seleccionado en el combo box de inserción
+            ? jComboBoxDepartamentoInsertar.getSelectedItem().toString()
+                // Si no se ha seleccionado ningún departamento asigna cadena vacía
+            : "";
 
-            // Validar que se haya seleccionado un departamento válido en el ComboBox
-            if (jComboBoxDepartamentoInsertar.getSelectedIndex() <= 0) {
-                jLabelInsertarMensajes.setText("Seleccione un departamento válido para insertar.");
-                return;
-            }
+        //Llama al método que procesa la inserción del vehículo con los datos en la fila 0 y el departamento seleccionado
+        //Este método valida, inserta en archivo y devuelve un mensaje de éxito o error
+        String mensaje = controlador.procesarInsercionVehiculo(modelo, fila, departamento);
+        
+        // Muestra el mensaje resultante en una etiqueta para informar al usuario
+        jLabelInsertarMensajes.setText(mensaje);
 
-            // Obtener el nombre del departamento seleccionado
-            String departamento = jComboBoxDepartamentoInsertar.getSelectedItem().toString();
-            
-            // Construir la ruta del archivo de texto donde se almacenarán los datos
-            String ruta = "SIRVE_Datos_Vehiculos_DataSet/" + departamento + "/" + departamento + "_vehiculos.txt";
-
-            // Crear una instancia del objeto Vehiculo con los datos ingresados
-            Vehiculo nuevoVehiculo = new Vehiculo(placa, dpi, nombre, marca, modeloVehiculo, anio, multas, traspasos);
-            
-            // Insertar el vehículo solo en el archivo (no modifica el árbol de datos, si existe)
-            controlador.insertarVehiculoEnArchivo(ruta, nuevoVehiculo);
-
-            // Mostrar mensaje de éxito al usuario
-            jLabelInsertarMensajes.setText("Vehículo insertado correctamente en el archivo.");
-
-            // Limpiar la fila de la tabla para dejarla lista para una nueva inserción
+        if (mensaje.equals("Vehículo insertado correctamente en el archivo.")) {
+             // Si la inserción fue exitosa, limpia los campos de la fila para permitir nueva inserción
             for (int i = 0; i < modelo.getColumnCount(); i++) {
+                //Establece cadena vacía en cada columna de la fila 0 para borrar los datos ingresados previamente
                 modelo.setValueAt("", fila, i);
             }
-
-        } catch (NumberFormatException e) {
-            // Error si el usuario ingresó texto en campos numéricos
-            jLabelInsertarMensajes.setText("Error: 'Año', 'Multas' y 'Traspasos' deben ser números.");
-        } catch (Exception e) {
-            // Cualquier otro error no controlado durante la inserción
-            jLabelInsertarMensajes.setText("Error al insertar: verifique los datos ingresados.");
+            //reiniciar el jComboBox de departamentos si se insertó con exito
+            jComboBoxDepartamentoInsertar.setSelectedIndex(0);
         }
     }//GEN-LAST:event_jButtonInsertarVehiculoActionPerformed
+
+    //método para cuando se presiona el boton de regresar
+    private void jButtonRegresarInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegresarInsertarActionPerformed
+        // Obtener selección actual de tipo de árbol y recorrido
+        int tipoArbolIndex = jComboBoxTipoArbol.getSelectedIndex();
+        int recorridoIndex = jComboBoxRecorrido.getSelectedIndex();
+
+        // Validar que ambos estén seleccionados (índices > 0)
+        if (tipoArbolIndex > 0 && recorridoIndex > 0) {
+            // Recargar datos desde el archivo según departamento
+            cargarDepartamentosSeleccionados(jComboBoxDepartamentos.getSelectedIndex());
+
+            // Guardar el recorrido seleccionado nuevamente
+            ultimoRecorridoSeleccionado = (String) jComboBoxRecorrido.getSelectedItem();
+
+            // Mostrar recorrido y llenar tabla
+            realizarRecorridoYMostrarTabla();
+        }
+
+        // Mostrar el panel de vehículos
+        CardLayout cl = (CardLayout) cardPanel.getLayout();
+        cl.show(cardPanel, "cardVehiculosABB");
+        
+        //reiniciar el label de mensajes
+        jLabelInsertarMensajes.setText("");
+
+        //reiniciar el combo box de las opciones y departamentos
+        jComboBoxOpcionesVehiculos.setSelectedIndex(0);
+        jComboBoxDepartamentoInsertar.setSelectedIndex(0);
+    }//GEN-LAST:event_jButtonRegresarInsertarActionPerformed
 
     // Realiza el recorrido seleccionado y actualiza la tabla con los resultados
     private void realizarRecorridoYMostrarTabla() {
@@ -574,6 +576,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     
     // Carga los datos desde archivo según el departamento seleccionado
     private void cargarDepartamentosSeleccionados(int index) {
+        controlador.limpiarDatos();
         if (index == 0) {
             // Si se selecciona "Todos los departamentos", los carga todos
             for (String departamento : DEPARTAMENTOS) {
@@ -644,6 +647,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton jButtonInsertarVehiculo;
     private javax.swing.JButton jButtonLimpiarTablaVehiculos;
     private javax.swing.JButton jButtonMultas;
+    private javax.swing.JButton jButtonRegresarInsertar;
     private javax.swing.JButton jButtonTraspasos;
     private javax.swing.JButton jButtonVehiculos;
     private javax.swing.JComboBox<String> jComboBoxDepartamentoInsertar;
