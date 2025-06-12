@@ -31,6 +31,7 @@ public class ControladorVehiculos {
         tiempoInsercion += (fin - inicio); // acumulativo si se cargan varios archivos
     }
     
+    //método para insertar un vehículo y escribirlo en el archivo de la ruta recibida
     public void insertarVehiculoEnArchivo(String rutaArchivo, Vehiculo vehiculo) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(rutaArchivo, true))) {
             // Formato: Placa,DPI,Nombre,Marca,Modelo,Año,Multas,Traspasos
@@ -50,7 +51,6 @@ public class ControladorVehiculos {
 
         } catch (IOException e) {
             e.printStackTrace();
-            // También puedes propagar la excepción si quieres manejarla en la UI
         }
     }
 
