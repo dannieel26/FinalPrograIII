@@ -29,21 +29,26 @@ public class ArbolAVL<T extends Comparable<T>> implements Arbol<T> {
         tiempoOperacion = fin - inicio; //calcula el tiempo de operación
     }
 
-    private Nodo insertarRecursivo(Nodo nodo, T dato) { //método recursivo para insertar un dato
-        if (nodo == null) { //si el nodo es null, crea uno nuevo
+    private Nodo insertarRecursivo(Nodo nodo, T dato) { // Método recursivo para insertar un dato
+        if (nodo == null) { // Si el nodo es null, crea uno nuevo
             return new Nodo(dato);
         }
 
-        int comparacion = dato.compareTo(nodo.dato); //compara el dato con el nodo actual
-        if (comparacion < 0) { //si el dato es menor, va al subárbol izquierdo
+        int comparacion = dato.compareTo(nodo.dato); // Compara el dato con el nodo actual
+
+        if (comparacion < 0) { // Si el dato es menor, va al subárbol izquierdo
             nodo.izquierdo = insertarRecursivo(nodo.izquierdo, dato);
-        } else if (comparacion > 0) { //si el dato es mayor, va al subárbol derecho
+        } else if (comparacion > 0) { // Si el dato es mayor, va al subárbol derecho
             nodo.derecho = insertarRecursivo(nodo.derecho, dato);
+        } else { // Si el dato es igual (duplicado), también lo insertamos en el subárbol derecho (o izquierdo, según preferencia)
+            nodo.derecho = insertarRecursivo(nodo.derecho, dato); // Inserta en el subárbol derecho
         }
 
-        nodo.altura = 1 + Math.max(altura(nodo.izquierdo), altura(nodo.derecho)); //actualiza la altura del nodo
+        // Actualiza la altura del nodo
+        nodo.altura = 1 + Math.max(altura(nodo.izquierdo), altura(nodo.derecho));
 
-        return balancear(nodo); //balancea el árbol después de la inserción
+        // Balancea el árbol después de la inserción
+        return balancear(nodo); // Balancea el árbol
     }
 
     private Nodo balancear(Nodo nodo) { //balancea el árbol para mantener las propiedades del AVL

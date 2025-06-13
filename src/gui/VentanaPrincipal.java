@@ -423,7 +423,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     // Cuando se selecciona un departamento en el ComboBox
     private void jComboBoxDepartamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxDepartamentosActionPerformed
-        controlador.limpiarDatos(); // Limpia el árbol actual para cargar nuevos datos
+        controlador.limpiarArbol();// Limpia el árbol actual para cargar nuevos datos
         DefaultTableModel modelo = (DefaultTableModel) jTableVehiculos.getModel();
         modelo.setRowCount(0); // Limpia la tabla
 
@@ -440,7 +440,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonLimpiarTablaVehiculosActionPerformed
 
     private void jComboBoxTipoArbolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTipoArbolActionPerformed
-        controlador.limpiarDatos(); // Limpia el árbol actual para cargar nuevos datos
+        controlador.limpiarArbol();// Limpia el árbol actual para cargar nuevos datos
         DefaultTableModel modelo = (DefaultTableModel) jTableVehiculos.getModel();
         modelo.setRowCount(0); // Limpia la tabla
 
@@ -480,11 +480,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             return;
         }
 
-        long inicioBusqueda = System.nanoTime(); //Inicia cronómetro
+        // Llamar al controlador para realizar la búsqueda
         List<Vehiculo> resultados = controlador.buscarVehiculosPorPlaca(textoBusqueda);
-        long finBusqueda = System.nanoTime(); //Termina cronómetro
-
-        double tiempoMilisBusqueda = (finBusqueda - inicioBusqueda) / 1_000_000.0;
 
         if (resultados.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No se encontraron vehículos con esa placa.");
@@ -492,8 +489,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             llenarTabla(resultados); // Reutilizamos el método que ya muestra datos en la tabla
         }
 
-        // Muestra el tiempo en el primer campo y deja el segundo en blanco
-        jLabelTiempoInsercion.setText(String.format("Tiempo de búsqueda: %.3f ms", tiempoMilisBusqueda));
+        // Muestra el tiempo de búsqueda, que ahora es gestionado por el controlador
+        jLabelTiempoInsercion.setText(String.format("Tiempo de búsqueda: %.3f ms", controlador.getTiempoInsercion() / 1_000_000.0));
         jLabelTiempoRecorrido.setText(""); // Limpiar el segundo campo
     }//GEN-LAST:event_jButtonBuscarVehiculoActionPerformed
 
@@ -536,7 +533,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 int indexDepartamentoSeleccionado = jComboBoxDepartamentos.getSelectedIndex();
                 jComboBoxDepartamentoModificar.setSelectedIndex(indexDepartamentoSeleccionado);
                 break;
-            case 4:
+            case 4: //eliminar
                 filaSeleccionada = jTableVehiculos.getSelectedRow();
                 if (filaSeleccionada == -1) {
                     JOptionPane.showMessageDialog(this, "Debe seleccionar un vehículo en la tabla primero.");
@@ -560,41 +557,38 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     // Método que se ejecuta al presionar el botón de "Insertar Vehiculo"
     private void jButtonInsertarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertarVehiculoActionPerformed
-        int fila = 0; //es la unica fila donde se insertan los datos
-        
-        // Obtiene el modelo de la tabla donde se ingresan los datos del nuevo vehículo
+        int fila = 0; // Es la única fila donde se insertan los datos
+
         DefaultTableModel modelo = (DefaultTableModel) jTableInsertarVehiculo.getModel();
         String departamento = (jComboBoxDepartamentoInsertar.getSelectedIndex() > 0)
-                // Obtiene el departamento seleccionado en el combo box de inserción
-            ? jComboBoxDepartamentoInsertar.getSelectedItem().toString()
-                // Si no se ha seleccionado ningún departamento asigna cadena vacía
-            : "";
+                ? jComboBoxDepartamentoInsertar.getSelectedItem().toString()
+                : "";
 
-        //Llama al método que procesa la inserción del vehículo con los datos en la fila 0 y el departamento seleccionado
-        //Este método valida, inserta en archivo y devuelve un mensaje de éxito o error
+        // Validación para comprobar si se seleccionó un departamento
+        if (departamento.isEmpty() || departamento.equals("Seleccione un departamento")) {
+            // Mostrar un mensaje en el jLabelInsertarMensajes
+            jLabelInsertarMensajes.setText("Debe seleccionar un departamento para insertar.");
+            return; // Salir del método y evitar que se inserte el vehículo
+        }
+
+        // Llamar al controlador para insertar el vehículo
         String mensaje = controlador.procesarInsercionVehiculo(modelo, fila, departamento);
-        
-        // Muestra el mensaje resultante en una etiqueta para informar al usuario
+
+        // Mostrar el mensaje resultante
         jLabelInsertarMensajes.setText(mensaje);
 
         if (mensaje.equals("Vehículo insertado correctamente en el archivo.")) {
-             // Si la inserción fue exitosa, limpia los campos de la fila para permitir nueva inserción
+            // Si la inserción fue exitosa, limpia los campos de la fila
             for (int i = 0; i < modelo.getColumnCount(); i++) {
-                //Establece cadena vacía en cada columna de la fila 0 para borrar los datos ingresados previamente
                 modelo.setValueAt("", fila, i);
             }
-            //reiniciar el jComboBox de departamentos si se insertó con exito
-            jComboBoxDepartamentoInsertar.setSelectedIndex(0);
-            
-            // Mostrar tiempo de inserción
-            long tiempoNano = controlador.getTiempoInsercion();
-            double tiempoMillis = tiempoNano / 1_000_000.0;
-            jLabelTiempoInsercion.setText(String.format("Tiempo de inserción: %.3f ms", tiempoMillis));
-            jLabelTiempoRecorrido.setText("");
 
-            // Limpiar label de recorrido por si acaso
+            jComboBoxDepartamentoInsertar.setSelectedIndex(0);
+
+            // Mostrar el tiempo de inserción desde el controlador
+            jLabelTiempoInsercion.setText(String.format("Tiempo de inserción: %.3f ms", controlador.getTiempoInsercion() / 1_000_000.0));
             jLabelTiempoRecorrido.setText("");
-            }
+        }
     }//GEN-LAST:event_jButtonInsertarVehiculoActionPerformed
 
     //método para cuando se presiona el boton de regresar
@@ -617,78 +611,31 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonRegresarInsertarVehiculoActionPerformed
 
     private void jButtonModificarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonModificarVehiculoActionPerformed
-        int fila = 0; // Solo una fila para modificar
         DefaultTableModel modelo = (DefaultTableModel) jTableModificarVehiculo.getModel();
+        String departamento = jComboBoxDepartamentoModificar.getSelectedIndex() > 0 
+                ? jComboBoxDepartamentoModificar.getSelectedItem().toString() 
+                : "";  // Obtener el departamento seleccionado
 
-        // Validar que la fila tenga datos
-        if (modelo.getRowCount() == 0 || modelo.getValueAt(fila, 0) == null) {
-            jLabelModificarMensajes.setText("Debe cargar los datos a modificar.");
-            return;
+        // Verificar si se ha seleccionado un departamento
+        if (departamento.isEmpty() || departamento.equals("Seleccione un departamento")) {
+            jLabelModificarMensajes.setText("Debe seleccionar un departamento para modificar.");
+            return; // Salir del método si no se seleccionó un departamento
         }
 
-        // Validar que todos los campos estén llenos
-        for (int i = 0; i < modelo.getColumnCount(); i++) {
-            Object valor = modelo.getValueAt(fila, i);
-            if (valor == null || valor.toString().trim().isEmpty()) {
-                jLabelModificarMensajes.setText("Debe completar todos los campos antes de modificar.");
-                return;
-            }
-        }
+        // Llamar al controlador para modificar el vehículo
+        String mensaje = controlador.modificarVehiculo(modelo, 0, departamento); // Pasamos el departamento
 
-        try {
-            String placa = modelo.getValueAt(fila, 0).toString().trim();
-            String dpi = modelo.getValueAt(fila, 1).toString().trim();
-            String nombre = modelo.getValueAt(fila, 2).toString().trim();
-            String marca = modelo.getValueAt(fila, 3).toString().trim();
-            String modeloVehiculo = modelo.getValueAt(fila, 4).toString().trim();
+        jLabelModificarMensajes.setText(mensaje);
 
-            int anio = Integer.parseInt(modelo.getValueAt(fila, 5).toString().trim());
-            int multas = Integer.parseInt(modelo.getValueAt(fila, 6).toString().trim());
-            int traspasos = Integer.parseInt(modelo.getValueAt(fila, 7).toString().trim());
-
-            // elegir en que departamento está el vehículo modificado
-            String departamento = (jComboBoxDepartamentoModificar.getSelectedIndex() > 0)
-                    ? jComboBoxDepartamentoModificar.getSelectedItem().toString()
-                    : "";
-
-            if (departamento.isEmpty()) {
-                jLabelModificarMensajes.setText("Seleccione un departamento válido para modificar.");
-                return;
+        if (mensaje.startsWith("Vehículo modificado")) {
+            // Limpiar la fila de modificar
+            for (int i = 0; i < modelo.getColumnCount(); i++) {
+                modelo.setValueAt("", 0, i);
             }
 
-            String ruta = "SIRVE_Datos_Vehiculos_DataSet/" + departamento + "/" + departamento + "_vehiculos.txt";
-            Vehiculo vehiculoModificado = new Vehiculo(placa, dpi, nombre, marca, modeloVehiculo, anio, multas, traspasos);
-
-            // Medir tiempo de modificación
-            long inicio = System.nanoTime();
-
-            // Llama al método en el controlador
-            String mensaje = controlador.modificarVehiculoEnArchivo(ruta, vehiculoModificado);
-
-            long fin = System.nanoTime();
-            double tiempoMillis = (fin - inicio) / 1_000_000.0;
-
-            jLabelModificarMensajes.setText(mensaje);
-
-            // Solo muestra el tiempo de modificación
-            jLabelTiempoInsercion.setText(String.format("Tiempo de modificación: %.3f ms", tiempoMillis));
-
-            // Limpiar el tiempo de recorrido después de la modificación
-            jLabelTiempoRecorrido.setText("");  // Limpia el tiempo de recorrido
-
-            if (mensaje.startsWith("Vehículo modificado")) {
-                // Limpia la fila de modificar
-                for (int i = 0; i < modelo.getColumnCount(); i++) {
-                    modelo.setValueAt("", fila, i);
-                }
-                // Reajusta combos
-                jComboBoxDepartamentoModificar.setSelectedIndex(0);
-
-            }
-        } catch (NumberFormatException e) {
-            jLabelModificarMensajes.setText("Error: 'Año', 'Multas' y 'Traspasos' deben ser números.");
-        } catch (Exception e) {
-            jLabelModificarMensajes.setText("Error al modificar: verifique los datos ingresados.");
+            // Mostrar el tiempo de modificación desde el controlador
+            jLabelTiempoInsercion.setText(String.format("Tiempo de modificación: %.3f ms", controlador.getTiempoInsercion() / 1_000_000.0));
+            jLabelTiempoRecorrido.setText("");  // Limpiar el tiempo de recorrido
         }
     }//GEN-LAST:event_jButtonModificarVehiculoActionPerformed
 
@@ -799,7 +746,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     
     // Carga los datos desde archivo según el departamento seleccionado
         private void cargarDepartamentosSeleccionados(int index, boolean esModificacion) {
-        controlador.limpiarDatos();
+        controlador.limpiarArbol();
 
         if (index == 0) {
             // Si se selecciona "Todos los departamentos", los carga todos

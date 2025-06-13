@@ -28,19 +28,22 @@ public class ArbolBinarioBusqueda<T extends Comparable<T>> implements Arbol<T> {
         tiempoOperacion = fin - inicio; //calcula el tiempo de operación
     }
 
-    private Nodo insertarRecursivo(Nodo nodo, T dato) { //metodo recursivo para insertar
-        if (nodo == null) { //si el nodo es null, crea uno nuevo
+    private Nodo insertarRecursivo(Nodo nodo, T dato) { // Método recursivo para insertar
+        if (nodo == null) { // Si el nodo es null, crea uno nuevo
             return new Nodo(dato);
         }
 
-        int comparacion = dato.compareTo(nodo.dato); //compara el dato con el nodo actual
-        if (comparacion < 0) { //si el dato es menor, va al subárbol izquierdo
+        int comparacion = dato.compareTo(nodo.dato); // Compara el dato con el nodo actual
+
+        if (comparacion < 0) { // Si el dato es menor, va al subárbol izquierdo
             nodo.izquierdo = insertarRecursivo(nodo.izquierdo, dato);
-        } else if (comparacion > 0) { //si el dato es mayor, va al subárbol derecho
+        } else if (comparacion > 0) { // Si el dato es mayor, va al subárbol derecho
             nodo.derecho = insertarRecursivo(nodo.derecho, dato);
+        } else { // Si el dato es igual, también lo insertamos en el subárbol derecho (o izquierdo, según preferencia)
+            nodo.derecho = insertarRecursivo(nodo.derecho, dato); // Esto permite duplicados en el subárbol derecho
         }
 
-        return nodo; //devuelve el nodo (sin cambios si ya está en el árbol)
+        return nodo; // Devuelve el nodo (sin cambios si ya está en el árbol)
     }
 
     @Override
@@ -69,39 +72,40 @@ public class ArbolBinarioBusqueda<T extends Comparable<T>> implements Arbol<T> {
     }
 
     @Override
-    public void eliminar(T dato) { //elimina un dato del árbol
-        long inicio = System.nanoTime(); //marca el inicio de la operación
-        raiz = eliminarRecursivo(raiz, dato); //llama al método recursivo para eliminar
-        long fin = System.nanoTime(); //marca el final de la operación
-        tiempoOperacion = fin - inicio; //calcula el tiempo de operación
+    public void eliminar(T dato) { // Elimina un dato del árbol
+        long inicio = System.nanoTime(); // Marca el inicio de la operación
+        raiz = eliminarRecursivo(raiz, dato); // Llama al método recursivo para eliminar
+        long fin = System.nanoTime(); // Marca el final de la operación
+        tiempoOperacion = fin - inicio; // Calcula el tiempo de operación
     }
 
-    private Nodo eliminarRecursivo(Nodo nodo, T dato) { //método recursivo para eliminar un dato
-        if (nodo == null) { //si el nodo es null, no hay nada que eliminar
+    private Nodo eliminarRecursivo(Nodo nodo, T dato) { // Método recursivo para eliminar un dato
+        if (nodo == null) { // Si el nodo es null, no hay nada que eliminar
             return null;
         }
 
-        int comparacion = dato.compareTo(nodo.dato); //compara el dato con el nodo actual
+        // Compara las placas del vehículo (dato y nodo.dato)
+        int comparacion = ((Vehiculo) dato).getPlaca().compareTo(((Vehiculo) nodo.dato).getPlaca());
 
-        if (comparacion < 0) { //si el dato es menor, busca en el subárbol izquierdo
+        if (comparacion < 0) { // Si el dato es menor, busca en el subárbol izquierdo
             nodo.izquierdo = eliminarRecursivo(nodo.izquierdo, dato);
-        } else if (comparacion > 0) { //si el dato es mayor, busca en el subárbol derecho
+        } else if (comparacion > 0) { // Si el dato es mayor, busca en el subárbol derecho
             nodo.derecho = eliminarRecursivo(nodo.derecho, dato);
-        } else { //si el dato coincide con el nodo
-            if (nodo.izquierdo == null && nodo.derecho == null) { //si no tiene hijos
-                return null; //elimina el nodo
+        } else { // Si el dato coincide con el nodo
+            if (nodo.izquierdo == null && nodo.derecho == null) { // Si no tiene hijos
+                return null; // Elimina el nodo
             }
-            if (nodo.izquierdo == null) { //si solo tiene hijo derecho
+            if (nodo.izquierdo == null) { // Si solo tiene hijo derecho
                 return nodo.derecho;
             }
-            if (nodo.derecho == null) { //si solo tiene hijo izquierdo
+            if (nodo.derecho == null) { // Si solo tiene hijo izquierdo
                 return nodo.izquierdo;
             }
 
-            nodo.dato = obtenerMinimo(nodo.derecho); //si tiene dos hijos, sustituye por el mínimo del subárbol derecho
-            nodo.derecho = eliminarRecursivo(nodo.derecho, nodo.dato); //elimina el mínimo encontrado
+            nodo.dato = obtenerMinimo(nodo.derecho); // Si tiene dos hijos, sustituye por el mínimo del subárbol derecho
+            nodo.derecho = eliminarRecursivo(nodo.derecho, nodo.dato); // Elimina el mínimo encontrado
         }
-        return nodo; //devuelve el nodo modificado
+        return nodo; // Devuelve el nodo modificado
     }
 
     private T obtenerMinimo(Nodo nodo) { //obtiene el valor mínimo de un subárbol
