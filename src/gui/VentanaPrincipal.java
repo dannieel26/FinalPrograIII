@@ -536,6 +536,17 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 int indexDepartamentoSeleccionado = jComboBoxDepartamentos.getSelectedIndex();
                 jComboBoxDepartamentoModificar.setSelectedIndex(indexDepartamentoSeleccionado);
                 break;
+            case 4:
+                filaSeleccionada = jTableVehiculos.getSelectedRow();
+                if (filaSeleccionada == -1) {
+                    JOptionPane.showMessageDialog(this, "Debe seleccionar un vehículo en la tabla primero.");
+                    return;
+                }
+
+                // Obtenemos la placa del vehículo seleccionado
+                String placaSeleccionada = jTableVehiculos.getValueAt(filaSeleccionada, 0).toString().trim();
+                eliminarVehiculo(placaSeleccionada);
+                break;
             default: // Nada o volver
                 clOpciones.show(jPanelCardOpcionesVehiculos, "cardOpcionesVacio");
                 clPrincipal.show(cardPanel, "cardVehiculosABB"); // volver al panel principal
@@ -821,6 +832,61 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 }
             }
         }
+    }
+        
+    private void eliminarVehiculo(String placa) {
+        //obtener el índice seleccionado en el JComboBox
+        int departamentoIndex = jComboBoxDepartamentos.getSelectedIndex();
+
+        long inicio = System.nanoTime();  // Comienza a medir el tiempo
+
+        //verificar si se ha seleccionado un departamento específico o "Todos los departamentos"
+        if (departamentoIndex == 0) {
+            // caso cuando se elige "Todos los departamentos"
+            //Buscar el vehículo en todos los departamentos
+            boolean encontrado = false;
+            for (String departamento : DEPARTAMENTOS) {
+                String ruta = "SIRVE_Datos_Vehiculos_DataSet/" + departamento + "/" + departamento + "_vehiculos.txt";
+                String mensaje = controlador.eliminarVehiculoEnArchivo(ruta, placa);
+
+                if (mensaje.equals("Vehículo eliminado correctamente.")) {
+                    encontrado = true;
+                    JOptionPane.showMessageDialog(this, "Vehículo eliminado correctamente de " + departamento);
+                    break;
+                }
+            }
+
+            if (!encontrado) {
+                JOptionPane.showMessageDialog(this, "Vehículo no encontrado en ningún departamento.");
+            }
+        } else {
+            //Caso cuando se selecciona un departamento específico
+            String departamento = (String) jComboBoxDepartamentos.getSelectedItem();
+            if (departamento == null || departamento.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debe seleccionar un departamento primero.");
+                return;
+            }
+
+            // Construir la ruta del archivo para el departamento seleccionado
+            String ruta = "SIRVE_Datos_Vehiculos_DataSet/" + departamento + "/" + departamento + "_vehiculos.txt";
+            // Llamar al método para eliminar el vehículo
+            String mensaje = controlador.eliminarVehiculoEnArchivo(ruta, placa);
+            JOptionPane.showMessageDialog(this, mensaje);
+        }
+
+        long fin = System.nanoTime();  // Fin de la medición
+        long tiempoEliminacion = fin - inicio;  // Calcular el tiempo en nanosegundos
+
+        // Convertir a milisegundos para un formato más legible
+        double tiempoEnMs = tiempoEliminacion / 1_000_000.0;
+
+        // Mostrar el tiempo de eliminación en el jLabelTiempoRecorrido
+        jLabelTiempoRecorrido.setText(String.format("Tiempo de eliminación: %.3f ms", tiempoEnMs));
+        jLabelTiempoInsercion.setText("");  // Limpiar el tiempo de inserción
+
+        // Limpiar la tabla y recargar los datos después de la eliminación
+        limpiarTabla();
+        cargarDepartamentosSeleccionados(jComboBoxDepartamentos.getSelectedIndex(), false);
     }
 
     //devuelve la ruta del archivo seleccionado en el combo box departamento

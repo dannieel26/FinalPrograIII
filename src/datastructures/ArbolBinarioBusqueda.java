@@ -86,6 +86,63 @@ public class ArbolBinarioBusqueda <T extends Comparable<T>> {
         }
     }
     
+    public void eliminar(T dato) {
+        raiz = eliminarRecursivo(raiz, dato);
+    }
+
+    private Nodo eliminarRecursivo(Nodo actual, T dato) {
+        if (actual == null) {
+            return null; // Si no se encuentra el nodo, simplemente devolvemos null
+        }
+
+        // Verifica que el dato sea un Vehiculo y compara las placas
+        if (dato instanceof Vehiculo && actual.dato instanceof Vehiculo) {
+            String placaDato = ((Vehiculo) dato).getPlaca();
+            String placaActual = ((Vehiculo) actual.dato).getPlaca();
+
+            int comparacion = placaDato.compareTo(placaActual);
+
+            // Si el dato a eliminar tiene una placa menor, buscamos en el subárbol izquierdo
+            if (comparacion < 0) {
+                actual.izquierdo = eliminarRecursivo(actual.izquierdo, dato);
+            }
+            // Si el dato a eliminar tiene una placa mayor, buscamos en el subárbol derecho
+            else if (comparacion > 0) {
+                actual.derecho = eliminarRecursivo(actual.derecho, dato);
+            }
+            // Si las placas son iguales, encontramos el nodo a eliminar
+            else {
+                // Caso 1: Nodo sin hijos (hoja)
+                if (actual.izquierdo == null && actual.derecho == null) {
+                    return null;
+                }
+                // Caso 2: Nodo con un solo hijo
+                if (actual.izquierdo == null) {
+                    return actual.derecho;
+                }
+                if (actual.derecho == null) {
+                    return actual.izquierdo;
+                }
+
+                // Caso 3: Nodo con dos hijos
+                // Buscar el nodo más pequeño en el subárbol derecho
+                actual.dato = obtenerMinimo(actual.derecho);
+                // Eliminar el nodo más pequeño en el subárbol derecho
+                actual.derecho = eliminarRecursivo(actual.derecho, actual.dato);
+            }
+        }
+
+        return actual;
+    }
+
+    // Método auxiliar para obtener el valor mínimo (más a la izquierda) de un subárbol
+    private T obtenerMinimo(Nodo nodo) {
+        while (nodo.izquierdo != null) {
+            nodo = nodo.izquierdo;
+        }
+        return nodo.dato;
+    }
+    
     public List<T> inorden() {
         List<T> resultado = new ArrayList<>();
         inordenRecursivo(raiz, resultado);

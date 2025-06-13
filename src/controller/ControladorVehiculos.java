@@ -163,6 +163,44 @@ public class ControladorVehiculos {
     public List<Vehiculo> buscarVehiculosPorPlaca(String subcadena) {
         return arbol.buscarPorSubcadena(subcadena);
     }
+    
+    public void eliminarVehiculoDelArbol(String placa) {
+        arbol.eliminar(placa); // Usamos el método de eliminación del árbol binario
+    }
+    
+    public String eliminarVehiculoEnArchivo(String rutaArchivo, String placa) {
+        try {
+            List<String> lineas = new ArrayList<>();
+            boolean encontrado = false;
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(rutaArchivo))) {
+                String linea;
+                while ((linea = reader.readLine()) != null) {
+                    if (linea.startsWith(placa + ",")) {
+                        encontrado = true; // Si encontramos el vehículo, no lo agregamos a la lista
+                    } else {
+                        lineas.add(linea); // Si no es el vehículo a eliminar, lo agregamos
+                    }
+                }
+            }
+
+            if (!encontrado) {
+                return "No se encontró el vehículo a eliminar.";
+            }
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(rutaArchivo, false))) {
+                for (String l : lineas) {
+                    writer.write(l);
+                    writer.newLine();
+                }
+            }
+
+            return "Vehículo eliminado correctamente.";
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Error al eliminar el vehículo del archivo.";
+        }
+    }
 
     public List<Vehiculo> obtenerVehiculosInorden() {
         long inicio = System.nanoTime();

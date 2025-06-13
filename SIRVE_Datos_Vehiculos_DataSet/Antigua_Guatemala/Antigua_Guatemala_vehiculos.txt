@@ -999,3 +999,4 @@ CPZ-3043,3541665726606,Pepita Galvez Juliá,Hyundai,Tucson,2017,3,3
 QPK-1666,2993604266192,Curro González-Lucena,Kia,Picanto,2001,2,1
 NTO-3696,2430870499868,Brunilda Almudena Benavente Juan,Kia,Picanto,2007,3,3
 DDA-2440,8097398311649,Cecilia Royo Mínguez,Kia,Rio,2016,5,2
+
