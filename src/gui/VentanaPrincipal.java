@@ -355,15 +355,24 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     // Botón para limpiar solo la tabla (no borra los datos del árbol)
     private void jButtonLimpiarTablaVehiculosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLimpiarTablaVehiculosActionPerformed
-        limpiarTablaYDatos();
+        limpiarTabla();
     }//GEN-LAST:event_jButtonLimpiarTablaVehiculosActionPerformed
 
     private void jComboBoxTipoArbolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTipoArbolActionPerformed
-        // TODO add your handling code here:
+        controlador.limpiarDatos(); // Limpia el árbol actual para cargar nuevos datos
+        DefaultTableModel modelo = (DefaultTableModel) jTableVehiculos.getModel();
+        modelo.setRowCount(0); // Limpia la tabla
+
+        // Carga los datos del archivo correspondiente al departamento seleccionado
+        cargarDepartamentosSeleccionados(jComboBoxDepartamentos.getSelectedIndex());
     }//GEN-LAST:event_jComboBoxTipoArbolActionPerformed
    
     // Cuando se selecciona un tipo de recorrido (Inorden, Preorden, Postorden)
     private void jComboBoxRecorridoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxRecorridoActionPerformed
+        if (jComboBoxRecorrido.getSelectedIndex() == 0){
+                    limpiarTabla();
+                }        
+
         // Verifica que se haya seleccionado un tipo de árbol y un recorrido válidos
         if (jComboBoxTipoArbol.getSelectedIndex() <= 0 || jComboBoxRecorrido.getSelectedIndex() <= 0) {
             return; // asegura que haya una selección válida
@@ -461,46 +470,41 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
             //reiniciar el jComboBox de departamentos si se insertó con exito
             jComboBoxDepartamentoInsertar.setSelectedIndex(0);
-        }
+            
+            // Mostrar tiempo de inserción
+            long tiempoNano = controlador.getTiempoInsercion();
+            double tiempoMillis = tiempoNano / 1_000_000.0;
+            jLabelTiempoInsercion.setText(String.format("Tiempo de inserción: %.3f ms", tiempoMillis));
+            jLabelTiempoRecorrido.setText("");
+
+            // Limpiar label de recorrido por si acaso
+            jLabelTiempoRecorrido.setText("");
+            }
     }//GEN-LAST:event_jButtonInsertarVehiculoActionPerformed
 
     //método para cuando se presiona el boton de regresar
     private void jButtonRegresarInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegresarInsertarActionPerformed
-        // Obtener selección actual de tipo de árbol y recorrido
-        int tipoArbolIndex = jComboBoxTipoArbol.getSelectedIndex();
-        int recorridoIndex = jComboBoxRecorrido.getSelectedIndex();
-
-        // Validar que ambos estén seleccionados (índices > 0)
-        if (tipoArbolIndex > 0 && recorridoIndex > 0) {
-            // Recargar datos desde el archivo según departamento
-            cargarDepartamentosSeleccionados(jComboBoxDepartamentos.getSelectedIndex());
-
-            // Guardar el recorrido seleccionado nuevamente
-            ultimoRecorridoSeleccionado = (String) jComboBoxRecorrido.getSelectedItem();
-
-            // Mostrar recorrido y llenar tabla
-            realizarRecorridoYMostrarTabla();
-        }
-
         // Mostrar el panel de vehículos
         CardLayout cl = (CardLayout) cardPanel.getLayout();
         cl.show(cardPanel, "cardVehiculosABB");
         
         //reiniciar el label de mensajes
         jLabelInsertarMensajes.setText("");
+        jLabelTiempoInsercion.setText("");
+        jLabelTiempoRecorrido.setText("");
 
         //reiniciar el combo box de las opciones y departamentos
         jComboBoxOpcionesVehiculos.setSelectedIndex(0);
         jComboBoxDepartamentoInsertar.setSelectedIndex(0);
+        jComboBoxDepartamentos.setSelectedIndex(0);
+        jComboBoxTipoArbol.setSelectedIndex(0);
+        jComboBoxRecorrido.setSelectedIndex(0);
     }//GEN-LAST:event_jButtonRegresarInsertarActionPerformed
 
     // Realiza el recorrido seleccionado y actualiza la tabla con los resultados
     private void realizarRecorridoYMostrarTabla() {
-        // Asegura que se haya seleccionado un recorrido y que el tipo de árbol sea válido
         if (ultimoRecorridoSeleccionado != null && jComboBoxTipoArbol.getSelectedIndex() == 1) {
-            long inicioRecorrido = System.nanoTime();
-
-            // Obtiene los vehículos en el orden seleccionado
+            // Obtener vehículos según recorrido
             List<Vehiculo> lista = switch (ultimoRecorridoSeleccionado) {
                 case "Inorden" -> controlador.obtenerVehiculosInorden();
                 case "Preorden" -> controlador.obtenerVehiculosPreorden();
@@ -508,17 +512,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 default -> null;
             };
 
-            long finRecorrido = System.nanoTime();
-            long duracionRecorrido = finRecorrido - inicioRecorrido;
-            double tiempoMilisRecorrido = duracionRecorrido / 1_000_000.0;
+            // Obtener tiempo desde el controlador
+            double tiempoMilisRecorrido = controlador.getTiempoRecorrido() / 1_000_000.0;
 
             if (lista != null) {
-                llenarTabla(lista); // Muestra los vehículos en la tabla
-
-                long tiempoNanoInsercion = controlador.getTiempoInsercion();
-                double tiempoMilisInsercion = tiempoNanoInsercion / 1_000_000.0;
-
-                jLabelTiempoInsercion.setText(String.format("Tiempo de inserción: %.3f ms", tiempoMilisInsercion));
+                llenarTabla(lista);
                 jLabelTiempoRecorrido.setText(String.format("Tiempo de recorrido: %.3f ms", tiempoMilisRecorrido));
             }
         }
@@ -572,22 +570,44 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         opcionesDepartamentosInsertar[0] = "Seleccione un departamento";
         System.arraycopy(DEPARTAMENTOS, 0, opcionesDepartamentosInsertar, 1, DEPARTAMENTOS.length);
         jComboBoxDepartamentoInsertar.setModel(new javax.swing.DefaultComboBoxModel<>(opcionesDepartamentosInsertar));
+        
+        jLabelTiempoInsercion.setText("");
     }
     
     // Carga los datos desde archivo según el departamento seleccionado
     private void cargarDepartamentosSeleccionados(int index) {
         controlador.limpiarDatos();
+        
         if (index == 0) {
             // Si se selecciona "Todos los departamentos", los carga todos
+            
+            //se empieza a medir el tiempo
+            long inicio = System.nanoTime();
             for (String departamento : DEPARTAMENTOS) {
                 String ruta = "SIRVE_Datos_Vehiculos_DataSet/" + departamento + "/" + departamento + "_vehiculos.txt";
-                controlador.cargarVehiculosDesdeArchivo(ruta);
+                if ("Binario".equals(jComboBoxTipoArbol.getSelectedItem())) {
+                    controlador.cargarVehiculosDesdeArchivo(ruta); // Aquí se insertan los datos
+                }
             }
+            //termina la meedición del tiempo
+            long fin = System.nanoTime();
+            long tiempoNano = fin - inicio;
+            double tiempoMillis = tiempoNano / 1_000_000.0;
+            jLabelTiempoInsercion.setText(String.format("Tiempo de carga: %.3f ms", tiempoMillis));
+                    
         } else {
             // Carga solo el archivo del departamento seleccionado
             String departamento = (String) jComboBoxDepartamentos.getSelectedItem();
             String ruta = "SIRVE_Datos_Vehiculos_DataSet/" + departamento + "/" + departamento + "_vehiculos.txt";
-            controlador.cargarVehiculosDesdeArchivo(ruta);
+            if ("Binario".equals(jComboBoxTipoArbol.getSelectedItem())) {
+                long inicio = System.nanoTime();
+                controlador.cargarVehiculosDesdeArchivo(ruta); // Aquí se insertan los datos
+                long fin = System.nanoTime();
+
+                long tiempoNano = fin - inicio;
+                double tiempoMillis = tiempoNano / 1_000_000.0;
+                jLabelTiempoInsercion.setText(String.format("Tiempo de carga: %.3f ms", tiempoMillis));
+            }
         }
     }
 
@@ -597,7 +617,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }
     
     // Limpia la tabla sin borrar el árbol de datos
-    private void limpiarTablaYDatos() {
+    private void limpiarTabla() {
         DefaultTableModel modelo = (DefaultTableModel) jTableVehiculos.getModel();
         modelo.setRowCount(0);
         //controlador.limpiarDatos();
