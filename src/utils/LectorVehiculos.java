@@ -1,5 +1,4 @@
 //esta clase carga los datos desde un archivo .txt y los transforma en una lista de objetos Vehiculo
-
 package utils;
 
 import java.io.BufferedReader;

@@ -1,3 +1,4 @@
+//esta clase es un modelo de datos que representa un vehículo individual, con todos sus atributos
 package model;
 
 public class Vehiculo implements Comparable<Vehiculo>{

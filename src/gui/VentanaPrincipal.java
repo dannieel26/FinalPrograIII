@@ -68,9 +68,22 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jComboBoxDepartamentoInsertar = new javax.swing.JComboBox<>();
         jButtonInsertarVehiculo = new javax.swing.JButton();
-        jButtonRegresarInsertar = new javax.swing.JButton();
+        jButtonRegresarInsertarVehiculo = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jLabelInsertarMensajes = new javax.swing.JLabel();
+        cardModificarVehiculo = new javax.swing.JPanel();
+        jPanel11 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel10 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTableModificarVehiculo = new javax.swing.JTable();
+        jPanel7 = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
+        jComboBoxDepartamentoModificar = new javax.swing.JComboBox<>();
+        jButtonModificarVehiculo = new javax.swing.JButton();
+        jButtonRegresarModificarVehiculo = new javax.swing.JButton();
+        jPanel9 = new javax.swing.JPanel();
+        jLabelModificarMensajes = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(51, 51, 51));
@@ -286,14 +299,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
         jPanel5.add(jButtonInsertarVehiculo);
 
-        jButtonRegresarInsertar.setText("Regresar");
-        jButtonRegresarInsertar.setPreferredSize(new java.awt.Dimension(100, 40));
-        jButtonRegresarInsertar.addActionListener(new java.awt.event.ActionListener() {
+        jButtonRegresarInsertarVehiculo.setText("Regresar");
+        jButtonRegresarInsertarVehiculo.setPreferredSize(new java.awt.Dimension(100, 40));
+        jButtonRegresarInsertarVehiculo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonRegresarInsertarActionPerformed(evt);
+                jButtonRegresarInsertarVehiculoActionPerformed(evt);
             }
         });
-        jPanel5.add(jButtonRegresarInsertar);
+        jPanel5.add(jButtonRegresarInsertarVehiculo);
 
         jPanel4.add(jPanel5, java.awt.BorderLayout.NORTH);
 
@@ -304,6 +317,74 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         cardInsertarVehiculo.add(jPanel4, java.awt.BorderLayout.SOUTH);
 
         cardPanel.add(cardInsertarVehiculo, "cardInsertarVehiculo");
+
+        cardModificarVehiculo.setLayout(new java.awt.BorderLayout());
+
+        jPanel11.setPreferredSize(new java.awt.Dimension(10, 50));
+        jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 15));
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel3.setText("MODIFICAR VEHÍCULO | MODIFIQUE LOS DATOS");
+        jPanel11.add(jLabel3);
+
+        cardModificarVehiculo.add(jPanel11, java.awt.BorderLayout.NORTH);
+
+        jPanel10.setLayout(new javax.swing.BoxLayout(jPanel10, javax.swing.BoxLayout.LINE_AXIS));
+
+        jTableModificarVehiculo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "PLACA", "DPI", "NOMBRE", "MARCA", "MODELO", "AÑO", "MULTAS", "TRASPASOS"
+            }
+        ));
+        jScrollPane3.setViewportView(jTableModificarVehiculo);
+
+        jPanel10.add(jScrollPane3);
+
+        cardModificarVehiculo.add(jPanel10, java.awt.BorderLayout.CENTER);
+
+        jPanel7.setPreferredSize(new java.awt.Dimension(10, 350));
+        jPanel7.setLayout(new java.awt.BorderLayout());
+
+        jComboBoxDepartamentoModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione un departamento" }));
+        jComboBoxDepartamentoModificar.setPreferredSize(new java.awt.Dimension(150, 40));
+        jComboBoxDepartamentoModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxDepartamentoModificarActionPerformed(evt);
+            }
+        });
+        jPanel8.add(jComboBoxDepartamentoModificar);
+
+        jButtonModificarVehiculo.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButtonModificarVehiculo.setText("Modificar");
+        jButtonModificarVehiculo.setPreferredSize(new java.awt.Dimension(100, 40));
+        jButtonModificarVehiculo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonModificarVehiculoActionPerformed(evt);
+            }
+        });
+        jPanel8.add(jButtonModificarVehiculo);
+
+        jButtonRegresarModificarVehiculo.setText("Regresar");
+        jButtonRegresarModificarVehiculo.setPreferredSize(new java.awt.Dimension(100, 40));
+        jButtonRegresarModificarVehiculo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRegresarModificarVehiculoActionPerformed(evt);
+            }
+        });
+        jPanel8.add(jButtonRegresarModificarVehiculo);
+
+        jPanel7.add(jPanel8, java.awt.BorderLayout.NORTH);
+
+        jPanel9.add(jLabelModificarMensajes);
+
+        jPanel7.add(jPanel9, java.awt.BorderLayout.CENTER);
+
+        cardModificarVehiculo.add(jPanel7, java.awt.BorderLayout.SOUTH);
+
+        cardPanel.add(cardModificarVehiculo, "cardModificarVehiculo");
 
         panelPrincipal.add(cardPanel, java.awt.BorderLayout.CENTER);
 
@@ -347,7 +428,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         modelo.setRowCount(0); // Limpia la tabla
 
         // Carga los datos del archivo correspondiente al departamento seleccionado
-        cargarDepartamentosSeleccionados(jComboBoxDepartamentos.getSelectedIndex());
+        cargarDepartamentosSeleccionados(jComboBoxDepartamentos.getSelectedIndex(),false);
         
         // Muestra los datos recorriendo el árbol (si ya se seleccionó un recorrido)
         realizarRecorridoYMostrarTabla();
@@ -364,7 +445,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         modelo.setRowCount(0); // Limpia la tabla
 
         // Carga los datos del archivo correspondiente al departamento seleccionado
-        cargarDepartamentosSeleccionados(jComboBoxDepartamentos.getSelectedIndex());
+        cargarDepartamentosSeleccionados(jComboBoxDepartamentos.getSelectedIndex(),false);
     }//GEN-LAST:event_jComboBoxTipoArbolActionPerformed
    
     // Cuando se selecciona un tipo de recorrido (Inorden, Preorden, Postorden)
@@ -432,6 +513,29 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 clPrincipal.show(cardPanel, "cardInsertarVehiculo");
                 clOpciones.show(jPanelCardOpcionesVehiculos, "cardOpcionesVacio");
                 break;
+            case 3: // Modificar
+                int filaSeleccionada = jTableVehiculos.getSelectedRow();
+                if (filaSeleccionada == -1) {
+                    JOptionPane.showMessageDialog(this, "Debe seleccionar un vehículo en la tabla primero.");
+                    // Vuelve al panel principal
+                    clOpciones.show(jPanelCardOpcionesVehiculos, "cardOpcionesVacio");
+                    clPrincipal.show(cardPanel, "cardVehiculosABB");
+                    return;
+                }
+
+                // Pasa los datos seleccionados a la tabla de modificar
+                DefaultTableModel modeloModificar = (DefaultTableModel) jTableModificarVehiculo.getModel();
+                modeloModificar.setRowCount(1); // Solo una fila
+                for (int i = 0; i < jTableVehiculos.getColumnCount(); i++) {
+                    Object valor = jTableVehiculos.getValueAt(filaSeleccionada, i);
+                    modeloModificar.setValueAt(valor, 0, i);
+                }
+                // Cambia de panel
+                clPrincipal.show(cardPanel, "cardModificarVehiculo");
+                clOpciones.show(jPanelCardOpcionesVehiculos, "cardOpcionesVacio");
+                int indexDepartamentoSeleccionado = jComboBoxDepartamentos.getSelectedIndex();
+                jComboBoxDepartamentoModificar.setSelectedIndex(indexDepartamentoSeleccionado);
+                break;
             default: // Nada o volver
                 clOpciones.show(jPanelCardOpcionesVehiculos, "cardOpcionesVacio");
                 clPrincipal.show(cardPanel, "cardVehiculosABB"); // volver al panel principal
@@ -483,7 +587,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonInsertarVehiculoActionPerformed
 
     //método para cuando se presiona el boton de regresar
-    private void jButtonRegresarInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegresarInsertarActionPerformed
+    private void jButtonRegresarInsertarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegresarInsertarVehiculoActionPerformed
         // Mostrar el panel de vehículos
         CardLayout cl = (CardLayout) cardPanel.getLayout();
         cl.show(cardPanel, "cardVehiculosABB");
@@ -499,12 +603,110 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jComboBoxDepartamentos.setSelectedIndex(0);
         jComboBoxTipoArbol.setSelectedIndex(0);
         jComboBoxRecorrido.setSelectedIndex(0);
-    }//GEN-LAST:event_jButtonRegresarInsertarActionPerformed
+    }//GEN-LAST:event_jButtonRegresarInsertarVehiculoActionPerformed
+
+    private void jButtonModificarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonModificarVehiculoActionPerformed
+        int fila = 0; // Solo una fila para modificar
+        DefaultTableModel modelo = (DefaultTableModel) jTableModificarVehiculo.getModel();
+
+        // Validar que la fila tenga datos
+        if (modelo.getRowCount() == 0 || modelo.getValueAt(fila, 0) == null) {
+            jLabelModificarMensajes.setText("Debe cargar los datos a modificar.");
+            return;
+        }
+
+        // Validar que todos los campos estén llenos
+        for (int i = 0; i < modelo.getColumnCount(); i++) {
+            Object valor = modelo.getValueAt(fila, i);
+            if (valor == null || valor.toString().trim().isEmpty()) {
+                jLabelModificarMensajes.setText("Debe completar todos los campos antes de modificar.");
+                return;
+            }
+        }
+
+        try {
+            String placa = modelo.getValueAt(fila, 0).toString().trim();
+            String dpi = modelo.getValueAt(fila, 1).toString().trim();
+            String nombre = modelo.getValueAt(fila, 2).toString().trim();
+            String marca = modelo.getValueAt(fila, 3).toString().trim();
+            String modeloVehiculo = modelo.getValueAt(fila, 4).toString().trim();
+
+            int anio = Integer.parseInt(modelo.getValueAt(fila, 5).toString().trim());
+            int multas = Integer.parseInt(modelo.getValueAt(fila, 6).toString().trim());
+            int traspasos = Integer.parseInt(modelo.getValueAt(fila, 7).toString().trim());
+
+            // elegir en que departamento está el vehículo modificado
+            String departamento = (jComboBoxDepartamentoModificar.getSelectedIndex() > 0)
+                    ? jComboBoxDepartamentoModificar.getSelectedItem().toString()
+                    : "";
+
+            if (departamento.isEmpty()) {
+                jLabelModificarMensajes.setText("Seleccione un departamento válido para modificar.");
+                return;
+            }
+
+            String ruta = "SIRVE_Datos_Vehiculos_DataSet/" + departamento + "/" + departamento + "_vehiculos.txt";
+            Vehiculo vehiculoModificado = new Vehiculo(placa, dpi, nombre, marca, modeloVehiculo, anio, multas, traspasos);
+
+            // Medir tiempo de modificación
+            long inicio = System.nanoTime();
+
+            // Llama al método en el controlador
+            String mensaje = controlador.modificarVehiculoEnArchivo(ruta, vehiculoModificado);
+
+            long fin = System.nanoTime();
+            double tiempoMillis = (fin - inicio) / 1_000_000.0;
+
+            jLabelModificarMensajes.setText(mensaje);
+
+            // Solo muestra el tiempo de modificación
+            jLabelTiempoInsercion.setText(String.format("Tiempo de modificación: %.3f ms", tiempoMillis));
+
+            // Limpiar el tiempo de recorrido después de la modificación
+            jLabelTiempoRecorrido.setText("");  // Limpia el tiempo de recorrido
+
+            if (mensaje.startsWith("Vehículo modificado")) {
+                // Limpia la fila de modificar
+                for (int i = 0; i < modelo.getColumnCount(); i++) {
+                    modelo.setValueAt("", fila, i);
+                }
+                // Reajusta combos
+                jComboBoxDepartamentoModificar.setSelectedIndex(0);
+
+            }
+        } catch (NumberFormatException e) {
+            jLabelModificarMensajes.setText("Error: 'Año', 'Multas' y 'Traspasos' deben ser números.");
+        } catch (Exception e) {
+            jLabelModificarMensajes.setText("Error al modificar: verifique los datos ingresados.");
+        }
+    }//GEN-LAST:event_jButtonModificarVehiculoActionPerformed
+
+    private void jButtonRegresarModificarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegresarModificarVehiculoActionPerformed
+        /// Mostrar el panel de vehículos
+        CardLayout cl = (CardLayout) cardPanel.getLayout();
+        cl.show(cardPanel, "cardVehiculosABB");
+        
+        //reiniciar el label de mensajes
+        jLabelModificarMensajes.setText("");
+        jLabelTiempoInsercion.setText("");
+        jLabelTiempoRecorrido.setText("");
+
+        //reiniciar el combo box de las opciones y departamentos
+        jComboBoxOpcionesVehiculos.setSelectedIndex(0);
+        jComboBoxDepartamentoInsertar.setSelectedIndex(0);
+        jComboBoxDepartamentos.setSelectedIndex(0);
+        jComboBoxTipoArbol.setSelectedIndex(0);
+        jComboBoxRecorrido.setSelectedIndex(0);
+    }//GEN-LAST:event_jButtonRegresarModificarVehiculoActionPerformed
+
+    private void jComboBoxDepartamentoModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxDepartamentoModificarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxDepartamentoModificarActionPerformed
 
     // Realiza el recorrido seleccionado y actualiza la tabla con los resultados
     private void realizarRecorridoYMostrarTabla() {
         if (ultimoRecorridoSeleccionado != null && jComboBoxTipoArbol.getSelectedIndex() == 1) {
-            // Obtener vehículos según recorrido
+            // Si no es modificación, entonces procesamos el recorrido
             List<Vehiculo> lista = switch (ultimoRecorridoSeleccionado) {
                 case "Inorden" -> controlador.obtenerVehiculosInorden();
                 case "Preorden" -> controlador.obtenerVehiculosPreorden();
@@ -512,7 +714,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 default -> null;
             };
 
-            // Obtener tiempo desde el controlador
+            // Solo mostrar tiempo de recorrido si se está haciendo realmente un recorrido
             double tiempoMilisRecorrido = controlador.getTiempoRecorrido() / 1_000_000.0;
 
             if (lista != null) {
@@ -547,11 +749,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     //Este método se llama en el constructor de la ventana, por lo que todo está listo cuando se abre la interfaz
     private void inicializarCombos() {
-        // Agrega "Todos los departamentos" al inicio
-        String[] opcionesDepartamentos = new String[DEPARTAMENTOS.length + 1];
-        opcionesDepartamentos[0] = "Todos los departamentos";
-        System.arraycopy(DEPARTAMENTOS, 0, opcionesDepartamentos, 1, DEPARTAMENTOS.length);
-        jComboBoxDepartamentos.setModel(new javax.swing.DefaultComboBoxModel<>(opcionesDepartamentos));
+        // Llenar el comboBox de departamentos para la vista principal
+        inicializarComboBoxDepartamentos(jComboBoxDepartamentos, "Todos los departamentos");
+
+        // Llenar el comboBox de departamentos para insertar
+        inicializarComboBoxDepartamentos(jComboBoxDepartamentoInsertar, "Seleccione un departamento");
+
+        // Llenar el comboBox de departamentos para modificar
+        inicializarComboBoxDepartamentos(jComboBoxDepartamentoModificar, "Seleccione un departamento");
 
         // ComboBox para tipo de árbol
         jComboBoxTipoArbol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
@@ -565,23 +770,28 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         // Selección por defecto
         jComboBoxDepartamentos.setSelectedIndex(0);
-        
-        String[] opcionesDepartamentosInsertar = new String[DEPARTAMENTOS.length + 1];
-        opcionesDepartamentosInsertar[0] = "Seleccione un departamento";
-        System.arraycopy(DEPARTAMENTOS, 0, opcionesDepartamentosInsertar, 1, DEPARTAMENTOS.length);
-        jComboBoxDepartamentoInsertar.setModel(new javax.swing.DefaultComboBoxModel<>(opcionesDepartamentosInsertar));
-        
         jLabelTiempoInsercion.setText("");
     }
     
+    private void inicializarComboBoxDepartamentos(javax.swing.JComboBox<String> comboBox, String valorInicial) {
+        // Agrega el valor inicial (Ejemplo: "Seleccione un departamento" o "Todos los departamentos")
+        String[] opcionesDepartamentos = new String[DEPARTAMENTOS.length + 1];
+        opcionesDepartamentos[0] = valorInicial;  // Valor inicial personalizado
+
+        // Copia los departamentos en el arreglo
+        System.arraycopy(DEPARTAMENTOS, 0, opcionesDepartamentos, 1, DEPARTAMENTOS.length);
+
+        // Asigna el modelo al comboBox
+        comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(opcionesDepartamentos));
+    }
+
+    
     // Carga los datos desde archivo según el departamento seleccionado
-    private void cargarDepartamentosSeleccionados(int index) {
+        private void cargarDepartamentosSeleccionados(int index, boolean esModificacion) {
         controlador.limpiarDatos();
-        
+
         if (index == 0) {
             // Si se selecciona "Todos los departamentos", los carga todos
-            
-            //se empieza a medir el tiempo
             long inicio = System.nanoTime();
             for (String departamento : DEPARTAMENTOS) {
                 String ruta = "SIRVE_Datos_Vehiculos_DataSet/" + departamento + "/" + departamento + "_vehiculos.txt";
@@ -589,12 +799,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                     controlador.cargarVehiculosDesdeArchivo(ruta); // Aquí se insertan los datos
                 }
             }
-            //termina la meedición del tiempo
             long fin = System.nanoTime();
             long tiempoNano = fin - inicio;
             double tiempoMillis = tiempoNano / 1_000_000.0;
-            jLabelTiempoInsercion.setText(String.format("Tiempo de carga: %.3f ms", tiempoMillis));
-                    
+            if (!esModificacion) {
+                jLabelTiempoInsercion.setText(String.format("Tiempo de carga: %.3f ms", tiempoMillis));
+            }
         } else {
             // Carga solo el archivo del departamento seleccionado
             String departamento = (String) jComboBoxDepartamentos.getSelectedItem();
@@ -606,7 +816,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
                 long tiempoNano = fin - inicio;
                 double tiempoMillis = tiempoNano / 1_000_000.0;
-                jLabelTiempoInsercion.setText(String.format("Tiempo de carga: %.3f ms", tiempoMillis));
+                if (!esModificacion) {
+                    jLabelTiempoInsercion.setText(String.format("Tiempo de carga: %.3f ms", tiempoMillis));
+                }
             }
         }
     }
@@ -660,37 +872,50 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel cardInsertarVehiculo;
+    private javax.swing.JPanel cardModificarVehiculo;
     private javax.swing.JPanel cardOpcionBuscarVehiculo;
     private javax.swing.JPanel cardPanel;
     private javax.swing.JPanel cardVehiculosABB;
     private javax.swing.JButton jButtonBuscarVehiculo;
     private javax.swing.JButton jButtonInsertarVehiculo;
     private javax.swing.JButton jButtonLimpiarTablaVehiculos;
+    private javax.swing.JButton jButtonModificarVehiculo;
     private javax.swing.JButton jButtonMultas;
-    private javax.swing.JButton jButtonRegresarInsertar;
+    private javax.swing.JButton jButtonRegresarInsertarVehiculo;
+    private javax.swing.JButton jButtonRegresarModificarVehiculo;
     private javax.swing.JButton jButtonTraspasos;
     private javax.swing.JButton jButtonVehiculos;
     private javax.swing.JComboBox<String> jComboBoxDepartamentoInsertar;
+    private javax.swing.JComboBox<String> jComboBoxDepartamentoModificar;
     private javax.swing.JComboBox<String> jComboBoxDepartamentos;
     private javax.swing.JComboBox<String> jComboBoxOpcionesVehiculos;
     private javax.swing.JComboBox<String> jComboBoxRecorrido;
     private javax.swing.JComboBox<String> jComboBoxTipoArbol;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabelInsertarMensajes;
+    private javax.swing.JLabel jLabelModificarMensajes;
     private javax.swing.JLabel jLabelTiempoInsercion;
     private javax.swing.JLabel jLabelTiempoRecorrido;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JPanel jPanelCardOpcionesVehiculos;
     private javax.swing.JPanel jPanelTiemposVehiculos;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTableInsertarVehiculo;
+    private javax.swing.JTable jTableModificarVehiculo;
     private javax.swing.JTable jTableVehiculos;
     private javax.swing.JTextField jTextFieldBuscarVehiculo;
     private javax.swing.JPanel menuLateral;
