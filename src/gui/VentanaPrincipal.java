@@ -1,7 +1,9 @@
 package gui;
 
+import controller.ControladorEstadisticas;
 import controller.ControladorVehiculos;
 import controller.ControladorMultas;
+import controller.ControladorRendimiento;
 import controller.ControladorTraspasos;
 import java.awt.BorderLayout;
 import java.util.List;
@@ -9,8 +11,6 @@ import javax.swing.table.DefaultTableModel;
 import datastructures.ListaCircular;
 import datastructures.ListaDoble;
 import java.awt.CardLayout;
-import java.awt.image.BufferedImage;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import model.Vehiculo;
 import model.Multa;
@@ -28,6 +28,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private ControladorMultas controladorMultas = new ControladorMultas();
     private ControladorTraspasos controladorTraspasos = new ControladorTraspasos();
     private boolean isInicializando = false;
+    private ControladorEstadisticas controladorEstadisticas = new ControladorEstadisticas();
+    private ControladorRendimiento controladorRendimiento;
 
 
     public VentanaPrincipal() {
@@ -38,6 +40,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         panelPrincipal.removeAll();
         panelPrincipal.revalidate();
         panelPrincipal.repaint();
+        controladorRendimiento = new ControladorRendimiento(controlador, jTextAreaRendimiento);
     }
 
     @SuppressWarnings("unchecked")
@@ -48,6 +51,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jButtonVehiculos = new javax.swing.JButton();
         jButtonMultas = new javax.swing.JButton();
         jButtonTraspasos = new javax.swing.JButton();
+        jButtonEstadisticas = new javax.swing.JButton();
+        jButtonRendimientoAlgoritmico = new javax.swing.JButton();
         jLabelLogo = new javax.swing.JLabel();
         cardPanelVisualizarEstructura = new javax.swing.JPanel();
         cardVisualizarEstructuraVacio = new javax.swing.JPanel();
@@ -84,6 +89,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jButtonLimpiarTablaTraspasos = new javax.swing.JButton();
         jLabelMensajesTraspasos = new javax.swing.JLabel();
         jLabelTiempoTraspasos = new javax.swing.JLabel();
+        cardSuperiorEstadisticas = new javax.swing.JPanel();
+        jLabelEstadisticas = new javax.swing.JLabel();
+        cardSuperiorRendimiento = new javax.swing.JPanel();
+        jLabelRendimiento = new javax.swing.JLabel();
         cardPanelCentral = new javax.swing.JPanel();
         cardCentralVehiculos = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -120,6 +129,16 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         cardCentralTraspasos = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         jTableTraspasos = new javax.swing.JTable();
+        cardCentralEstadisticas = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        jTableEstadisticasMultas = new javax.swing.JTable();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        jTableEstadisticasTraspasos = new javax.swing.JTable();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        jTableEstadisticasMeses = new javax.swing.JTable();
+        cardCentralRendimientoAlgoritmico = new javax.swing.JPanel();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        jTextAreaRendimiento = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(51, 51, 51));
@@ -163,6 +182,28 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
         });
         panelLateral.add(jButtonTraspasos);
+
+        jButtonEstadisticas.setBackground(new java.awt.Color(204, 204, 204));
+        jButtonEstadisticas.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButtonEstadisticas.setText("ESTADISTÍSTICAS");
+        jButtonEstadisticas.setPreferredSize(new java.awt.Dimension(150, 36));
+        jButtonEstadisticas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEstadisticasActionPerformed(evt);
+            }
+        });
+        panelLateral.add(jButtonEstadisticas);
+
+        jButtonRendimientoAlgoritmico.setBackground(new java.awt.Color(204, 204, 204));
+        jButtonRendimientoAlgoritmico.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButtonRendimientoAlgoritmico.setText("<html>RENDIMIENTO<br>ALGORITMICO</html>");
+        jButtonRendimientoAlgoritmico.setPreferredSize(new java.awt.Dimension(150, 45));
+        jButtonRendimientoAlgoritmico.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRendimientoAlgoritmicoActionPerformed(evt);
+            }
+        });
+        panelLateral.add(jButtonRendimientoAlgoritmico);
 
         jLabelLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/logoUMG.png"))); // NOI18N
         jLabelLogo.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -355,6 +396,20 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         cardPanelSuperior.add(cardSuperiorTraspasos, "cardSuperiorTraspasos");
 
+        jLabelEstadisticas.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        jLabelEstadisticas.setText("<html><div style='text-align: center;'>ESTADÍSTICAS</div>Vehículo con más multas | Vehículo con más traspasos | Mes con más eventos</html>");
+        cardSuperiorEstadisticas.add(jLabelEstadisticas);
+
+        cardPanelSuperior.add(cardSuperiorEstadisticas, "cardSuperiorEstadisticas");
+
+        cardSuperiorRendimiento.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 15));
+
+        jLabelRendimiento.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        jLabelRendimiento.setText("RENDIMIENTO ALGORITMICO");
+        cardSuperiorRendimiento.add(jLabelRendimiento);
+
+        cardPanelSuperior.add(cardSuperiorRendimiento, "cardSuperiorRendimiento");
+
         panelPrincipal.add(cardPanelSuperior, java.awt.BorderLayout.NORTH);
 
         cardPanelCentral.setPreferredSize(new java.awt.Dimension(800, 100));
@@ -545,6 +600,56 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         cardPanelCentral.add(cardCentralTraspasos, "cardCentralTraspasos");
 
+        cardCentralEstadisticas.setLayout(new javax.swing.BoxLayout(cardCentralEstadisticas, javax.swing.BoxLayout.LINE_AXIS));
+
+        jTableEstadisticasMultas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "PLACA", "CANTIDAD"
+            }
+        ));
+        jScrollPane6.setViewportView(jTableEstadisticasMultas);
+
+        cardCentralEstadisticas.add(jScrollPane6);
+
+        jTableEstadisticasTraspasos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "PLACA", "CANTIDAD"
+            }
+        ));
+        jScrollPane7.setViewportView(jTableEstadisticasTraspasos);
+
+        cardCentralEstadisticas.add(jScrollPane7);
+
+        jTableEstadisticasMeses.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "AÑO-MES", "CANTIDAD"
+            }
+        ));
+        jScrollPane8.setViewportView(jTableEstadisticasMeses);
+
+        cardCentralEstadisticas.add(jScrollPane8);
+
+        cardPanelCentral.add(cardCentralEstadisticas, "cardCentralEstadisticas");
+
+        cardCentralRendimientoAlgoritmico.setLayout(new java.awt.BorderLayout());
+
+        jTextAreaRendimiento.setColumns(20);
+        jTextAreaRendimiento.setRows(5);
+        jScrollPane9.setViewportView(jTextAreaRendimiento);
+
+        cardCentralRendimientoAlgoritmico.add(jScrollPane9, java.awt.BorderLayout.CENTER);
+
+        cardPanelCentral.add(cardCentralRendimientoAlgoritmico, "cardCentralRendimientoAlgoritmico");
+
         panelPrincipal.add(cardPanelCentral, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(panelPrincipal, java.awt.BorderLayout.CENTER);
@@ -552,52 +657,35 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    // Métodos de los botones para cambiar entre tarjetas de CardLayout
+    private void cambiarTarjeta(String cardSuperior, String cardCentral) {
+        panelPrincipal.add(cardPanelSuperior, BorderLayout.NORTH);
+        panelPrincipal.add(cardPanelCentral, BorderLayout.CENTER);
+
+        CardLayout cl1 = (CardLayout) cardPanelSuperior.getLayout();
+        cl1.show(cardPanelSuperior, cardSuperior);
+
+        CardLayout cl2 = (CardLayout) cardPanelCentral.getLayout();
+        cl2.show(cardPanelCentral, cardCentral);
+
+        panelPrincipal.revalidate();
+        panelPrincipal.repaint();
+    }
+    
     //cuando se presiona el boton de vehiculos
     private void jButtonVehiculosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVehiculosActionPerformed
-        // Agrega el menú superior y central al panel principal
-        panelPrincipal.add(cardPanelSuperior, BorderLayout.NORTH);
-        panelPrincipal.add(cardPanelCentral, BorderLayout.CENTER);
-        
-        CardLayout cl1 = (CardLayout) cardPanelSuperior.getLayout();
-        cl1.show(cardPanelSuperior, "cardSuperiorVehiculos");
-        
-        CardLayout cl2 = (CardLayout) cardPanelCentral.getLayout();
-        cl2.show(cardPanelCentral, "cardCentralVehiculos");
-        
-        panelPrincipal.revalidate();// Actualiza el diseño del panel
-        panelPrincipal.repaint(); // Redibuja el contenido
+        //llamo al método para mostrar la tarjeta y le mando el nombre de las card para vehiculos
+        cambiarTarjeta("cardSuperiorVehiculos", "cardCentralVehiculos");
     }//GEN-LAST:event_jButtonVehiculosActionPerformed
 
-    // Botón "Multas" (sin funcionalidad aún)
+    // Botón "Multas"
     private void jButtonMultasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMultasActionPerformed
-        // Agrega el menú superior y central  al panel principal
-        panelPrincipal.add(cardPanelSuperior, BorderLayout.NORTH);
-        panelPrincipal.add(cardPanelCentral, BorderLayout.CENTER);
-        
-        CardLayout cl1 = (CardLayout) cardPanelSuperior.getLayout();
-        cl1.show(cardPanelSuperior, "cardSuperiorMultas");
-        
-        CardLayout cl2 = (CardLayout) cardPanelCentral.getLayout();
-        cl2.show(cardPanelCentral, "cardCentralMultas");
-        
-        panelPrincipal.revalidate();// Actualiza el diseño del panel
-        panelPrincipal.repaint(); // Redibuja el contenido
+        cambiarTarjeta("cardSuperiorMultas", "cardCentralMultas");
     }//GEN-LAST:event_jButtonMultasActionPerformed
 
-    // Botón "Traspasos" (sin funcionalidad aún)
+    // Botón "Traspasos"
     private void jButtonTraspasosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTraspasosActionPerformed
-        // Agrega el menú superior y central  al panel principal
-        panelPrincipal.add(cardPanelSuperior, BorderLayout.NORTH);
-        panelPrincipal.add(cardPanelCentral, BorderLayout.CENTER);
-        
-        CardLayout cl1 = (CardLayout) cardPanelSuperior.getLayout();
-        cl1.show(cardPanelSuperior, "cardSuperiorTraspasos");
-        
-        CardLayout cl2 = (CardLayout) cardPanelCentral.getLayout();
-        cl2.show(cardPanelCentral, "cardCentralTraspasos");
-        
-        panelPrincipal.revalidate();// Actualiza el diseño del panel
-        panelPrincipal.repaint(); // Redibuja el contenido
+        cambiarTarjeta("cardSuperiorTraspasos", "cardCentralTraspasos");
     }//GEN-LAST:event_jButtonTraspasosActionPerformed
 
     // Cuando se selecciona un departamento en el ComboBox
@@ -919,6 +1007,26 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         controlador.generarVisualizacionArbol(tipoArbol);
     }//GEN-LAST:event_jButtonVisualizarEstructuraActionPerformed
 
+    private void jButtonEstadisticasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEstadisticasActionPerformed
+        controladorEstadisticas.generarEstadisticas(controlador, 
+                                                   jTableEstadisticasMultas, 
+                                                   jTableEstadisticasTraspasos, 
+                                                   jTableEstadisticasMeses);
+        
+        cambiarTarjeta("cardSuperiorEstadisticas", "cardCentralEstadisticas");
+    }//GEN-LAST:event_jButtonEstadisticasActionPerformed
+
+    private void jButtonRendimientoAlgoritmicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRendimientoAlgoritmicoActionPerformed
+        // Llamamos al controlador de rendimiento para realizar la comparación
+    String resultado = controladorRendimiento.realizarComparacionRendimiento();
+
+    // Mostramos el resultado en el JTextArea
+    jTextAreaRendimiento.setText(resultado);  // Primero mostramos el resumen de rendimiento
+
+    // Cambiamos a la tarjeta correspondiente para mostrar los resultados
+    cambiarTarjeta("cardSuperiorRendimiento", "cardCentralRendimientoAlgoritmico");
+    }//GEN-LAST:event_jButtonRendimientoAlgoritmicoActionPerformed
+
     //Realiza el recorrido seleccionado y actualiza la tabla con los resultados
     private void realizarRecorridoYMostrarTabla() {
         // Verificamos que se haya seleccionado un recorrido y un tipo de árbol válidos
@@ -984,10 +1092,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         // Agregar las multas a la tabla
         for (Multa multa : multas) {
             modelo.addRow(new Object[]{
-                multa.getPlaca(),
-                multa.getFecha(),
-                multa.getDescripcion(),
-                multa.getMonto()
+                multa.getPlaca(), multa.getFecha(), multa.getDescripcion(), multa.getMonto()
             });
         }
     }
@@ -998,12 +1103,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         for (Traspaso t : traspasos.obtenerLista()) {
             modelo.addRow(new Object[]{
-                t.getPlaca(),
-                t.getDpiAnterior(),
-                t.getNombreAnterior(),
-                t.getFecha(),
-                t.getDpiNuevo(),
-                t.getNombreNuevo()
+                t.getPlaca(), t.getDpiAnterior(), t.getNombreAnterior(),
+                t.getFecha(), t.getDpiNuevo(), t.getNombreNuevo()
             });
         }
     }
@@ -1160,7 +1261,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private void limpiarTabla() {
         DefaultTableModel modelo = (DefaultTableModel) jTableVehiculos.getModel();
         modelo.setRowCount(0);
-        //controlador.limpiarDatos();
     }
     
     // Método auxiliar para limpiar la tabla de multas
@@ -1177,7 +1277,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jLabelMensajesTraspasos.setText("");
         jLabelTiempoTraspasos.setText("");
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -1214,7 +1314,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel cardCentralEstadisticas;
     private javax.swing.JPanel cardCentralMultas;
+    private javax.swing.JPanel cardCentralRendimientoAlgoritmico;
     private javax.swing.JPanel cardCentralTraspasos;
     private javax.swing.JPanel cardCentralVehiculos;
     private javax.swing.JPanel cardInsertarVehiculo;
@@ -1223,7 +1325,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JPanel cardPanelCentral;
     private javax.swing.JPanel cardPanelSuperior;
     private javax.swing.JPanel cardPanelVisualizarEstructura;
+    private javax.swing.JPanel cardSuperiorEstadisticas;
     private javax.swing.JPanel cardSuperiorMultas;
+    private javax.swing.JPanel cardSuperiorRendimiento;
     private javax.swing.JPanel cardSuperiorTraspasos;
     private javax.swing.JPanel cardSuperiorVehiculos;
     private javax.swing.JPanel cardVisualizarEstructura;
@@ -1231,6 +1335,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton jButtonBuscarMulta;
     private javax.swing.JButton jButtonBuscarTraspaso;
     private javax.swing.JButton jButtonBuscarVehiculo;
+    private javax.swing.JButton jButtonEstadisticas;
     private javax.swing.JButton jButtonInsertarVehiculo;
     private javax.swing.JButton jButtonLimpiarTablaMultas;
     private javax.swing.JButton jButtonLimpiarTablaTraspasos;
@@ -1239,6 +1344,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton jButtonMultas;
     private javax.swing.JButton jButtonRegresarInsertarVehiculo;
     private javax.swing.JButton jButtonRegresarModificarVehiculo;
+    private javax.swing.JButton jButtonRendimientoAlgoritmico;
     private javax.swing.JButton jButtonTraspasos;
     private javax.swing.JButton jButtonVehiculos;
     private javax.swing.JButton jButtonVisualizarEstructura;
@@ -1252,11 +1358,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabelEstadisticas;
     private javax.swing.JLabel jLabelInsertarMensajes;
     private javax.swing.JLabel jLabelLogo;
     private javax.swing.JLabel jLabelMensajesMultas;
     private javax.swing.JLabel jLabelMensajesTraspasos;
     private javax.swing.JLabel jLabelModificarMensajes;
+    private javax.swing.JLabel jLabelRendimiento;
     private javax.swing.JLabel jLabelTiempoInsercion;
     private javax.swing.JLabel jLabelTiempoMultas;
     private javax.swing.JLabel jLabelTiempoRecorrido;
@@ -1280,11 +1388,19 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
+    private javax.swing.JTable jTableEstadisticasMeses;
+    private javax.swing.JTable jTableEstadisticasMultas;
+    private javax.swing.JTable jTableEstadisticasTraspasos;
     private javax.swing.JTable jTableInsertarVehiculo;
     private javax.swing.JTable jTableModificarVehiculo;
     private javax.swing.JTable jTableMultas;
     private javax.swing.JTable jTableTraspasos;
     private javax.swing.JTable jTableVehiculos;
+    private javax.swing.JTextArea jTextAreaRendimiento;
     private javax.swing.JTextField jTextFieldBuscarMulta;
     private javax.swing.JTextField jTextFieldBuscarTraspaso;
     private javax.swing.JTextField jTextFieldBuscarVehiculo;

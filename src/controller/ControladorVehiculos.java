@@ -4,7 +4,6 @@ import datastructures.Arbol;
 import datastructures.ArbolBinarioBusqueda;
 import datastructures.ArbolAVL;
 import datastructures.ListaDoble;
-import java.awt.image.BufferedImage;
 import model.Vehiculo;
 import utils.LectorVehiculos;
 import javax.swing.table.DefaultTableModel;
@@ -118,11 +117,11 @@ public class ControladorVehiculos {
         );
 
         // Escribir la línea en el archivo
-        writer.write(linea);
-    } catch (IOException e) {
-        e.printStackTrace();
+            writer.write(linea);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-}
 
     public String modificarVehiculo(DefaultTableModel modelo, int fila, String departamento) {
         // Marca el inicio de la operación
@@ -329,14 +328,15 @@ public class ControladorVehiculos {
     }
     
     public int getAlturaArbolActual() {
-    // Si tu árbol tiene el método getAltura()
-    // (tanto AVL como ABB deberían tenerlo)
-    if (arbol instanceof ArbolBinarioBusqueda) {
-        return ((ArbolBinarioBusqueda<Vehiculo>) arbol).getAltura();
-    } else if (arbol instanceof ArbolAVL) {
-        return ((ArbolAVL<Vehiculo>) arbol).getAltura();
+        if (arbol instanceof ArbolBinarioBusqueda) {
+            return ((ArbolBinarioBusqueda<Vehiculo>) arbol).getAltura();
+        } else if (arbol instanceof ArbolAVL) {
+            return ((ArbolAVL<Vehiculo>) arbol).getAltura();
+        }
+        return 0;
     }
-    return 0;
-}
 
+    public Arbol<Vehiculo> getArbol() {
+        return arbol;
+    }
 }
