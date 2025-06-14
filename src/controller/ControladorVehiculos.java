@@ -317,16 +317,14 @@ public class ControladorVehiculos {
         return listaMultas;
     }
     
-    public BufferedImage generarVisualizacionArbol(String tipoArbol) {
+    public void generarVisualizacionArbol(String tipoArbol) {
         try {
             String rutaDot = "arbol.dot";
-            String rutaImagen = "arbol.png";
+            String rutaSvg = "arbol.svg";
             ArbolVisualizer.generarArchivoDot(arbol, tipoArbol, rutaDot);
-            ArbolVisualizer.generarImagenGraphviz(rutaDot, rutaImagen);
-            return ArbolVisualizer.cargarImagen(rutaImagen);
+            ArbolVisualizer.generarSvgYAbrir(rutaDot, rutaSvg);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
     }
     

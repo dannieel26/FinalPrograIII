@@ -916,13 +916,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     private void jButtonVisualizarEstructuraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVisualizarEstructuraActionPerformed
         String tipoArbol = (String) jComboBoxTipoArbol.getSelectedItem(); // "Binario" o "AVL"
-        BufferedImage img = controlador.generarVisualizacionArbol(tipoArbol);
-        if (img != null) {
-            ImageIcon icon = new ImageIcon(img);
-            jLabelVisualizacionArbol.setIcon(icon); // Suponiendo que tienes un JLabel en tu UI
-        } else {
-            JOptionPane.showMessageDialog(this, "No se pudo generar la imagen del árbol.");
-        }
+        controlador.generarVisualizacionArbol(tipoArbol);
     }//GEN-LAST:event_jButtonVisualizarEstructuraActionPerformed
 
     //Realiza el recorrido seleccionado y actualiza la tabla con los resultados
