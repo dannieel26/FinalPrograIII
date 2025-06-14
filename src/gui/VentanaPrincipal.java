@@ -1,23 +1,30 @@
 package gui;
 
+import controller.ControladorVehiculos;
+import controller.ControladorMultas;
+import controller.ControladorTraspasos;
 import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
-import model.Vehiculo;
-import controller.ControladorVehiculos;
+import datastructures.ListaCircular;
+import datastructures.ListaDoble;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
+import model.Vehiculo;
+import model.Multa;
+import model.Traspaso;
 
 public class VentanaPrincipal extends javax.swing.JFrame {
     
     private String rutaArchivoSeleccionado;
-    private ControladorVehiculos controlador = new ControladorVehiculos();
     private String ultimoRecorridoSeleccionado = null;
     private static final String[] DEPARTAMENTOS = {
         "Suchitepequez", "Antigua_Guatemala", "Chimaltenango", "Chiquimula",
         "Escuintla", "Guatemala", "Huehuetenango", "Peten", "Quetzaltenango", "San_Marcos"
     };
-
+    private ControladorVehiculos controlador = new ControladorVehiculos();
+    private ControladorMultas controladorMultas = new ControladorMultas();
+    private ControladorTraspasos controladorTraspasos = new ControladorTraspasos();
 
 
     public VentanaPrincipal() {
@@ -25,7 +32,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         inicializarCombos();
         setLocationRelativeTo(null);
         setTitle("SIRVE | Sistema Inteligente de Registro de Vehículos y Evaluación");
-        panelPrincipal.removeAll(); //por el momento en construccion
+        panelPrincipal.removeAll();
         panelPrincipal.revalidate();
         panelPrincipal.repaint();
     }
@@ -34,13 +41,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        menuLateral = new javax.swing.JPanel();
+        panelLateral = new javax.swing.JPanel();
         jButtonVehiculos = new javax.swing.JButton();
         jButtonMultas = new javax.swing.JButton();
         jButtonTraspasos = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         panelPrincipal = new javax.swing.JPanel();
-        menuSuperior = new javax.swing.JPanel();
+        cardPanelSuperior = new javax.swing.JPanel();
+        cardSuperiorVehiculos = new javax.swing.JPanel();
         jComboBoxDepartamentos = new javax.swing.JComboBox<>();
         jComboBoxTipoArbol = new javax.swing.JComboBox<>();
         jComboBoxRecorrido = new javax.swing.JComboBox<>();
@@ -54,8 +62,22 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jPanelTiemposVehiculos = new javax.swing.JPanel();
         jLabelTiempoInsercion = new javax.swing.JLabel();
         jLabelTiempoRecorrido = new javax.swing.JLabel();
-        cardPanel = new javax.swing.JPanel();
-        cardVehiculosABB = new javax.swing.JPanel();
+        cardSuperiorMultas = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jTextFieldBuscarMulta = new javax.swing.JTextField();
+        jButtonBuscarMulta = new javax.swing.JButton();
+        jButtonLimpiarTablaMultas = new javax.swing.JButton();
+        jLabelMensajesMultas = new javax.swing.JLabel();
+        jLabelTiempoMultas = new javax.swing.JLabel();
+        cardSuperiorTraspasos = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        jTextFieldBuscarTraspaso = new javax.swing.JTextField();
+        jButtonBuscarTraspaso = new javax.swing.JButton();
+        jButtonLimpiarTablaTraspasos = new javax.swing.JButton();
+        jLabelMensajesTraspasos = new javax.swing.JLabel();
+        jLabelTiempoTraspasos = new javax.swing.JLabel();
+        cardPanelCentral = new javax.swing.JPanel();
+        cardCentralVehiculos = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableVehiculos = new javax.swing.JTable();
         cardInsertarVehiculo = new javax.swing.JPanel();
@@ -84,6 +106,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jButtonRegresarModificarVehiculo = new javax.swing.JButton();
         jPanel9 = new javax.swing.JPanel();
         jLabelModificarMensajes = new javax.swing.JLabel();
+        cardCentralMultas = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTableMultas = new javax.swing.JTable();
+        cardCentralTraspasos = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTableTraspasos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(51, 51, 51));
@@ -92,8 +120,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(900, 600));
         setSize(new java.awt.Dimension(900, 556));
 
-        menuLateral.setBackground(new java.awt.Color(51, 51, 51));
-        menuLateral.setPreferredSize(new java.awt.Dimension(200, 100));
+        panelLateral.setBackground(new java.awt.Color(51, 51, 51));
+        panelLateral.setPreferredSize(new java.awt.Dimension(200, 100));
 
         jButtonVehiculos.setBackground(new java.awt.Color(204, 204, 204));
         jButtonVehiculos.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -104,7 +132,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jButtonVehiculosActionPerformed(evt);
             }
         });
-        menuLateral.add(jButtonVehiculos);
+        panelLateral.add(jButtonVehiculos);
 
         jButtonMultas.setBackground(new java.awt.Color(204, 204, 204));
         jButtonMultas.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -115,7 +143,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jButtonMultasActionPerformed(evt);
             }
         });
-        menuLateral.add(jButtonMultas);
+        panelLateral.add(jButtonMultas);
 
         jButtonTraspasos.setBackground(new java.awt.Color(204, 204, 204));
         jButtonTraspasos.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -126,19 +154,21 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jButtonTraspasosActionPerformed(evt);
             }
         });
-        menuLateral.add(jButtonTraspasos);
+        panelLateral.add(jButtonTraspasos);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/logoUMG.png"))); // NOI18N
-        menuLateral.add(jLabel1);
+        panelLateral.add(jLabel1);
 
-        getContentPane().add(menuLateral, java.awt.BorderLayout.WEST);
+        getContentPane().add(panelLateral, java.awt.BorderLayout.WEST);
 
         panelPrincipal.setBackground(new java.awt.Color(51, 51, 51));
         panelPrincipal.setLayout(new java.awt.BorderLayout());
 
-        menuSuperior.setMaximumSize(null);
-        menuSuperior.setPreferredSize(new java.awt.Dimension(800, 65));
-        menuSuperior.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 15));
+        cardPanelSuperior.setLayout(new java.awt.CardLayout());
+
+        cardSuperiorVehiculos.setMaximumSize(null);
+        cardSuperiorVehiculos.setPreferredSize(new java.awt.Dimension(800, 65));
+        cardSuperiorVehiculos.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 15));
 
         jComboBoxDepartamentos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos los departamentos" }));
         jComboBoxDepartamentos.setMaximumSize(new java.awt.Dimension(0, 0));
@@ -150,7 +180,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jComboBoxDepartamentosActionPerformed(evt);
             }
         });
-        menuSuperior.add(jComboBoxDepartamentos);
+        cardSuperiorVehiculos.add(jComboBoxDepartamentos);
 
         jComboBoxTipoArbol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tipo de arbol" }));
         jComboBoxTipoArbol.setMaximumSize(null);
@@ -161,7 +191,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jComboBoxTipoArbolActionPerformed(evt);
             }
         });
-        menuSuperior.add(jComboBoxTipoArbol);
+        cardSuperiorVehiculos.add(jComboBoxTipoArbol);
 
         jComboBoxRecorrido.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Recorrido" }));
         jComboBoxRecorrido.setPreferredSize(new java.awt.Dimension(110, 35));
@@ -170,7 +200,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jComboBoxRecorridoActionPerformed(evt);
             }
         });
-        menuSuperior.add(jComboBoxRecorrido);
+        cardSuperiorVehiculos.add(jComboBoxRecorrido);
 
         jComboBoxOpcionesVehiculos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Opciones", "Buscar", "Insertar", "Modificar", "Eliminar" }));
         jComboBoxOpcionesVehiculos.setPreferredSize(new java.awt.Dimension(90, 35));
@@ -179,7 +209,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jComboBoxOpcionesVehiculosActionPerformed(evt);
             }
         });
-        menuSuperior.add(jComboBoxOpcionesVehiculos);
+        cardSuperiorVehiculos.add(jComboBoxOpcionesVehiculos);
 
         jPanelCardOpcionesVehiculos.setPreferredSize(new java.awt.Dimension(180, 35));
         jPanelCardOpcionesVehiculos.setLayout(new java.awt.CardLayout());
@@ -200,7 +230,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jPanelCardOpcionesVehiculos.add(cardOpcionBuscarVehiculo, "cardOpcionBuscarVehiculo");
 
-        menuSuperior.add(jPanelCardOpcionesVehiculos);
+        cardSuperiorVehiculos.add(jPanelCardOpcionesVehiculos);
 
         jButtonLimpiarTablaVehiculos.setText("Limpiar tabla");
         jButtonLimpiarTablaVehiculos.setPreferredSize(new java.awt.Dimension(103, 35));
@@ -209,21 +239,97 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jButtonLimpiarTablaVehiculosActionPerformed(evt);
             }
         });
-        menuSuperior.add(jButtonLimpiarTablaVehiculos);
+        cardSuperiorVehiculos.add(jButtonLimpiarTablaVehiculos);
 
         jPanelTiemposVehiculos.setPreferredSize(new java.awt.Dimension(200, 35));
         jPanelTiemposVehiculos.setLayout(new javax.swing.BoxLayout(jPanelTiemposVehiculos, javax.swing.BoxLayout.PAGE_AXIS));
         jPanelTiemposVehiculos.add(jLabelTiempoInsercion);
         jPanelTiemposVehiculos.add(jLabelTiempoRecorrido);
 
-        menuSuperior.add(jPanelTiemposVehiculos);
+        cardSuperiorVehiculos.add(jPanelTiemposVehiculos);
 
-        panelPrincipal.add(menuSuperior, java.awt.BorderLayout.NORTH);
+        cardPanelSuperior.add(cardSuperiorVehiculos, "cardSuperiorVehiculos");
 
-        cardPanel.setPreferredSize(new java.awt.Dimension(800, 100));
-        cardPanel.setLayout(new java.awt.CardLayout());
+        cardSuperiorMultas.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 15));
 
-        cardVehiculosABB.setLayout(new java.awt.BorderLayout());
+        jLabel4.setText(" Ingrese la placa:");
+        cardSuperiorMultas.add(jLabel4);
+
+        jTextFieldBuscarMulta.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTextFieldBuscarMulta.setPreferredSize(new java.awt.Dimension(100, 30));
+        jTextFieldBuscarMulta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldBuscarMultaActionPerformed(evt);
+            }
+        });
+        cardSuperiorMultas.add(jTextFieldBuscarMulta);
+
+        jButtonBuscarMulta.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jButtonBuscarMulta.setText("Buscar multas");
+        jButtonBuscarMulta.setPreferredSize(new java.awt.Dimension(120, 35));
+        jButtonBuscarMulta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBuscarMultaActionPerformed(evt);
+            }
+        });
+        cardSuperiorMultas.add(jButtonBuscarMulta);
+
+        jButtonLimpiarTablaMultas.setText("Limpiar Tabla");
+        jButtonLimpiarTablaMultas.setPreferredSize(new java.awt.Dimension(110, 35));
+        jButtonLimpiarTablaMultas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonLimpiarTablaMultasActionPerformed(evt);
+            }
+        });
+        cardSuperiorMultas.add(jButtonLimpiarTablaMultas);
+        cardSuperiorMultas.add(jLabelMensajesMultas);
+        cardSuperiorMultas.add(jLabelTiempoMultas);
+
+        cardPanelSuperior.add(cardSuperiorMultas, "cardSuperiorMultas");
+
+        cardSuperiorTraspasos.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 15));
+
+        jLabel5.setText(" Ingrese la placa:");
+        cardSuperiorTraspasos.add(jLabel5);
+
+        jTextFieldBuscarTraspaso.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTextFieldBuscarTraspaso.setPreferredSize(new java.awt.Dimension(100, 30));
+        jTextFieldBuscarTraspaso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldBuscarTraspasoActionPerformed(evt);
+            }
+        });
+        cardSuperiorTraspasos.add(jTextFieldBuscarTraspaso);
+
+        jButtonBuscarTraspaso.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jButtonBuscarTraspaso.setText("Buscar traspasos");
+        jButtonBuscarTraspaso.setPreferredSize(new java.awt.Dimension(130, 35));
+        jButtonBuscarTraspaso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBuscarTraspasoActionPerformed(evt);
+            }
+        });
+        cardSuperiorTraspasos.add(jButtonBuscarTraspaso);
+
+        jButtonLimpiarTablaTraspasos.setText("Limpiar Tabla");
+        jButtonLimpiarTablaTraspasos.setPreferredSize(new java.awt.Dimension(110, 35));
+        jButtonLimpiarTablaTraspasos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonLimpiarTablaTraspasosActionPerformed(evt);
+            }
+        });
+        cardSuperiorTraspasos.add(jButtonLimpiarTablaTraspasos);
+        cardSuperiorTraspasos.add(jLabelMensajesTraspasos);
+        cardSuperiorTraspasos.add(jLabelTiempoTraspasos);
+
+        cardPanelSuperior.add(cardSuperiorTraspasos, "cardSuperiorTraspasos");
+
+        panelPrincipal.add(cardPanelSuperior, java.awt.BorderLayout.NORTH);
+
+        cardPanelCentral.setPreferredSize(new java.awt.Dimension(800, 100));
+        cardPanelCentral.setLayout(new java.awt.CardLayout());
+
+        cardCentralVehiculos.setLayout(new java.awt.BorderLayout());
 
         jScrollPane1.setMaximumSize(null);
         jScrollPane1.setMinimumSize(null);
@@ -246,9 +352,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTableVehiculos);
 
-        cardVehiculosABB.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        cardCentralVehiculos.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-        cardPanel.add(cardVehiculosABB, "cardVehiculosABB");
+        cardPanelCentral.add(cardCentralVehiculos, "cardCentralVehiculos");
 
         cardInsertarVehiculo.setLayout(new java.awt.BorderLayout());
 
@@ -316,7 +422,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         cardInsertarVehiculo.add(jPanel4, java.awt.BorderLayout.SOUTH);
 
-        cardPanel.add(cardInsertarVehiculo, "cardInsertarVehiculo");
+        cardPanelCentral.add(cardInsertarVehiculo, "cardInsertarVehiculo");
 
         cardModificarVehiculo.setLayout(new java.awt.BorderLayout());
 
@@ -384,9 +490,41 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         cardModificarVehiculo.add(jPanel7, java.awt.BorderLayout.SOUTH);
 
-        cardPanel.add(cardModificarVehiculo, "cardModificarVehiculo");
+        cardPanelCentral.add(cardModificarVehiculo, "cardModificarVehiculo");
 
-        panelPrincipal.add(cardPanel, java.awt.BorderLayout.CENTER);
+        cardCentralMultas.setLayout(new java.awt.BorderLayout());
+
+        jTableMultas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "PLACA", "FECHA", "DESCRIPCION", "MONTO"
+            }
+        ));
+        jScrollPane4.setViewportView(jTableMultas);
+
+        cardCentralMultas.add(jScrollPane4, java.awt.BorderLayout.CENTER);
+
+        cardPanelCentral.add(cardCentralMultas, "cardCentralMultas");
+
+        cardCentralTraspasos.setLayout(new java.awt.BorderLayout());
+
+        jTableTraspasos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "PLACA", "DPI ANTERIOR", "NOMBRE ANTERIOR", "FECHA", "DPI NUEVO", "NOMBRE NUEVO"
+            }
+        ));
+        jScrollPane5.setViewportView(jTableTraspasos);
+
+        cardCentralTraspasos.add(jScrollPane5, java.awt.BorderLayout.CENTER);
+
+        cardPanelCentral.add(cardCentralTraspasos, "cardCentralTraspasos");
+
+        panelPrincipal.add(cardPanelCentral, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(panelPrincipal, java.awt.BorderLayout.CENTER);
 
@@ -395,13 +533,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     //cuando se presiona el boton de vehiculos
     private void jButtonVehiculosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVehiculosActionPerformed
-        // Agrega el menú superior y el panel de tarjetas al panel principal
-        panelPrincipal.add(menuSuperior, BorderLayout.NORTH);
-        panelPrincipal.add(cardPanel, BorderLayout.CENTER);
+        // Agrega el menú superior y central al panel principal
+        panelPrincipal.add(cardPanelSuperior, BorderLayout.NORTH);
+        panelPrincipal.add(cardPanelCentral, BorderLayout.CENTER);
         
-        // Muestra la tarjeta correspondiente a vehículos (nombre del panel: "cardVehiculosABB")
-        CardLayout cl = (CardLayout) cardPanel.getLayout();
-        cl.show(cardPanel, "cardVehiculosABB");
+        CardLayout cl1 = (CardLayout) cardPanelSuperior.getLayout();
+        cl1.show(cardPanelSuperior, "cardSuperiorVehiculos");
+        
+        CardLayout cl2 = (CardLayout) cardPanelCentral.getLayout();
+        cl2.show(cardPanelCentral, "cardCentralVehiculos");
         
         panelPrincipal.revalidate();// Actualiza el diseño del panel
         panelPrincipal.repaint(); // Redibuja el contenido
@@ -409,16 +549,34 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     // Botón "Multas" (sin funcionalidad aún)
     private void jButtonMultasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMultasActionPerformed
-        panelPrincipal.removeAll(); //por el momento en construccion
-        panelPrincipal.revalidate();
-        panelPrincipal.repaint();
+        // Agrega el menú superior y central  al panel principal
+        panelPrincipal.add(cardPanelSuperior, BorderLayout.NORTH);
+        panelPrincipal.add(cardPanelCentral, BorderLayout.CENTER);
+        
+        CardLayout cl1 = (CardLayout) cardPanelSuperior.getLayout();
+        cl1.show(cardPanelSuperior, "cardSuperiorMultas");
+        
+        CardLayout cl2 = (CardLayout) cardPanelCentral.getLayout();
+        cl2.show(cardPanelCentral, "cardCentralMultas");
+        
+        panelPrincipal.revalidate();// Actualiza el diseño del panel
+        panelPrincipal.repaint(); // Redibuja el contenido
     }//GEN-LAST:event_jButtonMultasActionPerformed
 
     // Botón "Traspasos" (sin funcionalidad aún)
     private void jButtonTraspasosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTraspasosActionPerformed
-        panelPrincipal.removeAll();//por el momento en construccion
-        panelPrincipal.revalidate();
-        panelPrincipal.repaint();
+        // Agrega el menú superior y central  al panel principal
+        panelPrincipal.add(cardPanelSuperior, BorderLayout.NORTH);
+        panelPrincipal.add(cardPanelCentral, BorderLayout.CENTER);
+        
+        CardLayout cl1 = (CardLayout) cardPanelSuperior.getLayout();
+        cl1.show(cardPanelSuperior, "cardSuperiorTraspasos");
+        
+        CardLayout cl2 = (CardLayout) cardPanelCentral.getLayout();
+        cl2.show(cardPanelCentral, "cardCentralTraspasos");
+        
+        panelPrincipal.revalidate();// Actualiza el diseño del panel
+        panelPrincipal.repaint(); // Redibuja el contenido
     }//GEN-LAST:event_jButtonTraspasosActionPerformed
 
     // Cuando se selecciona un departamento en el ComboBox
@@ -502,15 +660,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         int index = jComboBoxOpcionesVehiculos.getSelectedIndex();
 
         CardLayout clOpciones = (CardLayout) jPanelCardOpcionesVehiculos.getLayout();
-        CardLayout clPrincipal = (CardLayout) cardPanel.getLayout();
+        CardLayout clPrincipal = (CardLayout) cardPanelCentral.getLayout();
 
         switch (index) {
             case 1: // Buscar
                 clOpciones.show(jPanelCardOpcionesVehiculos, "cardOpcionBuscarVehiculo");
-                clPrincipal.show(cardPanel, "cardVehiculosABB"); // volver al panel principal
+                clPrincipal.show(cardPanelCentral, "cardVehiculosABB"); // volver al panel principal
                 break;
             case 2: // Insertar
-                clPrincipal.show(cardPanel, "cardInsertarVehiculo");
+                clPrincipal.show(cardPanelCentral, "cardInsertarVehiculo");
                 clOpciones.show(jPanelCardOpcionesVehiculos, "cardOpcionesVacio");
                 break;
             case 3: // Modificar
@@ -519,7 +677,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, "Debe seleccionar un vehículo en la tabla primero.");
                     // Vuelve al panel principal
                     clOpciones.show(jPanelCardOpcionesVehiculos, "cardOpcionesVacio");
-                    clPrincipal.show(cardPanel, "cardVehiculosABB");
+                    clPrincipal.show(cardPanelCentral, "cardVehiculosABB");
                     return;
                 }
 
@@ -531,7 +689,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                     modeloModificar.setValueAt(valor, 0, i);
                 }
                 // Cambia de panel
-                clPrincipal.show(cardPanel, "cardModificarVehiculo");
+                clPrincipal.show(cardPanelCentral, "cardModificarVehiculo");
                 clOpciones.show(jPanelCardOpcionesVehiculos, "cardOpcionesVacio");
                 int indexDepartamentoSeleccionado = jComboBoxDepartamentos.getSelectedIndex();
                 jComboBoxDepartamentoModificar.setSelectedIndex(indexDepartamentoSeleccionado);
@@ -549,7 +707,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 break;
             default: // Nada o volver
                 clOpciones.show(jPanelCardOpcionesVehiculos, "cardOpcionesVacio");
-                clPrincipal.show(cardPanel, "cardVehiculosABB"); // volver al panel principal
+                clPrincipal.show(cardPanelCentral, "cardVehiculosABB"); // volver al panel principal
                 break;
         }
     }//GEN-LAST:event_jComboBoxOpcionesVehiculosActionPerformed
@@ -596,9 +754,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     //método para cuando se presiona el boton de regresar
     private void jButtonRegresarInsertarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegresarInsertarVehiculoActionPerformed
-        // Mostrar el panel de vehículos
-        CardLayout cl = (CardLayout) cardPanel.getLayout();
-        cl.show(cardPanel, "cardVehiculosABB");
+        CardLayout cl1 = (CardLayout) cardPanelSuperior.getLayout();
+        cl1.show(cardPanelSuperior, "cardSuperiorVehiculos");
+        
+        CardLayout cl2 = (CardLayout) cardPanelCentral.getLayout();
+        cl2.show(cardPanelCentral, "cardCentralVehiculos");
         
         //reiniciar el label de mensajes
         jLabelInsertarMensajes.setText("");
@@ -643,9 +803,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonModificarVehiculoActionPerformed
 
     private void jButtonRegresarModificarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegresarModificarVehiculoActionPerformed
-        /// Mostrar el panel de vehículos
-        CardLayout cl = (CardLayout) cardPanel.getLayout();
-        cl.show(cardPanel, "cardVehiculosABB");
+        CardLayout cl1 = (CardLayout) cardPanelSuperior.getLayout();
+        cl1.show(cardPanelSuperior, "cardSuperiorVehiculos");
+        
+        CardLayout cl2 = (CardLayout) cardPanelCentral.getLayout();
+        cl2.show(cardPanelCentral, "cardCentralVehiculos");
         
         //reiniciar el label de mensajes
         jLabelModificarMensajes.setText("");
@@ -663,6 +825,80 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private void jComboBoxDepartamentoModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxDepartamentoModificarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxDepartamentoModificarActionPerformed
+
+    private void jTextFieldBuscarMultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldBuscarMultaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldBuscarMultaActionPerformed
+
+    private void jButtonBuscarMultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarMultaActionPerformed
+        String placa = jTextFieldBuscarMulta.getText().trim();
+
+        if (placa.isEmpty()) {
+            jLabelMensajesMultas.setText("Debe ingresar la placa del vehículo.");
+            limpiarTablaMultas();
+            jLabelTiempoMultas.setText(""); // limpia tiempo anterior
+            return;
+        }
+
+        long inicioBusqueda = System.nanoTime();
+
+        ListaDoble<Multa> listaMultas = controladorMultas.cargarMultasPorPlaca(placa);
+
+        long finBusqueda = System.nanoTime();
+        double tiempoBusqueda = (finBusqueda - inicioBusqueda) / 1_000_000.0;
+
+        // SIEMPRE limpia la tabla antes de actualizarla
+        limpiarTablaMultas();
+
+        if (listaMultas.getTamaño() == 0) {
+            jLabelMensajesMultas.setText("No se encontraron multas para la placa: " + placa);
+        } else {
+            llenarTablaMultas(listaMultas);
+            jLabelMensajesMultas.setText("Multas cargadas correctamente.");
+        }
+
+        jLabelTiempoMultas.setText(String.format("Tiempo de búsqueda: %.3f ms", tiempoBusqueda));
+    }//GEN-LAST:event_jButtonBuscarMultaActionPerformed
+
+    private void jButtonLimpiarTablaMultasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLimpiarTablaMultasActionPerformed
+        limpiarTablaMultas();
+    }//GEN-LAST:event_jButtonLimpiarTablaMultasActionPerformed
+
+    private void jTextFieldBuscarTraspasoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldBuscarTraspasoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldBuscarTraspasoActionPerformed
+
+    private void jButtonBuscarTraspasoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarTraspasoActionPerformed
+    String placa = jTextFieldBuscarTraspaso.getText().trim();
+
+    if (placa.isEmpty()) {
+        jLabelMensajesTraspasos.setText("Debe ingresar la placa del vehículo.");
+        limpiarTablaTraspasos();
+        return;
+    }
+
+    long inicioBusqueda = System.nanoTime();
+
+    ListaCircular<Traspaso> traspasos = controladorTraspasos.cargarTraspasosPorPlaca(placa);
+
+    long finBusqueda = System.nanoTime();
+    double tiempoBusqueda = (finBusqueda - inicioBusqueda) / 1_000_000.0;
+
+    limpiarTablaTraspasos();
+
+    if (traspasos.getTamaño() == 0) {
+        jLabelMensajesTraspasos.setText("No se encontraron traspasos para la placa: " + placa);
+    } else {
+        llenarTablaTraspasos(traspasos);
+        jLabelMensajesTraspasos.setText("Traspasos cargados correctamente.");
+    }
+
+    jLabelTiempoTraspasos.setText(String.format("Tiempo de búsqueda: %.3f ms", tiempoBusqueda));
+    }//GEN-LAST:event_jButtonBuscarTraspasoActionPerformed
+
+    private void jButtonLimpiarTablaTraspasosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLimpiarTablaTraspasosActionPerformed
+        limpiarTablaTraspasos();
+    }//GEN-LAST:event_jButtonLimpiarTablaTraspasosActionPerformed
 
     //Realiza el recorrido seleccionado y actualiza la tabla con los resultados
     private void realizarRecorridoYMostrarTabla() {
@@ -717,6 +953,40 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         
         // Mensaje de depuración en consola
         System.out.println("Total de vehiculos mostrados en la tabla: " + lista.size());
+    }
+    
+    private void llenarTablaMultas(ListaDoble<Multa> listaMultas) {
+        DefaultTableModel modelo = (DefaultTableModel) jTableMultas.getModel();
+        modelo.setRowCount(0); // Limpiar la tabla
+
+        // Obtener una lista normal de multas
+        List<Multa> multas = listaMultas.obtenerLista();
+
+        // Agregar las multas a la tabla
+        for (Multa multa : multas) {
+            modelo.addRow(new Object[]{
+                multa.getPlaca(),
+                multa.getFecha(),
+                multa.getDescripcion(),
+                multa.getMonto()
+            });
+        }
+    }
+    
+    private void llenarTablaTraspasos(ListaCircular<Traspaso> traspasos) {
+        DefaultTableModel modelo = (DefaultTableModel) jTableTraspasos.getModel();
+        modelo.setRowCount(0);
+
+        for (Traspaso t : traspasos.obtenerLista()) {
+            modelo.addRow(new Object[]{
+                t.getPlaca(),
+                t.getDpiAnterior(),
+                t.getNombreAnterior(),
+                t.getFecha(),
+                t.getDpiNuevo(),
+                t.getNombreNuevo()
+            });
+        }
     }
 
     //Este método se llama en el constructor de la ventana, por lo que todo está listo cuando se abre la interfaz
@@ -862,6 +1132,21 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         //controlador.limpiarDatos();
     }
     
+    // Método auxiliar para limpiar la tabla de multas
+    private void limpiarTablaMultas() {
+        DefaultTableModel modelo = (DefaultTableModel) jTableMultas.getModel();
+        modelo.setRowCount(0);
+        jLabelMensajesMultas.setText("");
+        jLabelTiempoMultas.setText("");
+    }
+    
+    private void limpiarTablaTraspasos() {
+        DefaultTableModel modelo = (DefaultTableModel) jTableTraspasos.getModel();
+        modelo.setRowCount(0);
+        jLabelMensajesTraspasos.setText("");
+        jLabelTiempoTraspasos.setText("");
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -898,13 +1183,23 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel cardCentralMultas;
+    private javax.swing.JPanel cardCentralTraspasos;
+    private javax.swing.JPanel cardCentralVehiculos;
     private javax.swing.JPanel cardInsertarVehiculo;
     private javax.swing.JPanel cardModificarVehiculo;
     private javax.swing.JPanel cardOpcionBuscarVehiculo;
-    private javax.swing.JPanel cardPanel;
-    private javax.swing.JPanel cardVehiculosABB;
+    private javax.swing.JPanel cardPanelCentral;
+    private javax.swing.JPanel cardPanelSuperior;
+    private javax.swing.JPanel cardSuperiorMultas;
+    private javax.swing.JPanel cardSuperiorTraspasos;
+    private javax.swing.JPanel cardSuperiorVehiculos;
+    private javax.swing.JButton jButtonBuscarMulta;
+    private javax.swing.JButton jButtonBuscarTraspaso;
     private javax.swing.JButton jButtonBuscarVehiculo;
     private javax.swing.JButton jButtonInsertarVehiculo;
+    private javax.swing.JButton jButtonLimpiarTablaMultas;
+    private javax.swing.JButton jButtonLimpiarTablaTraspasos;
     private javax.swing.JButton jButtonLimpiarTablaVehiculos;
     private javax.swing.JButton jButtonModificarVehiculo;
     private javax.swing.JButton jButtonMultas;
@@ -921,10 +1216,16 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabelInsertarMensajes;
+    private javax.swing.JLabel jLabelMensajesMultas;
+    private javax.swing.JLabel jLabelMensajesTraspasos;
     private javax.swing.JLabel jLabelModificarMensajes;
     private javax.swing.JLabel jLabelTiempoInsercion;
+    private javax.swing.JLabel jLabelTiempoMultas;
     private javax.swing.JLabel jLabelTiempoRecorrido;
+    private javax.swing.JLabel jLabelTiempoTraspasos;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -941,12 +1242,17 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTable jTableInsertarVehiculo;
     private javax.swing.JTable jTableModificarVehiculo;
+    private javax.swing.JTable jTableMultas;
+    private javax.swing.JTable jTableTraspasos;
     private javax.swing.JTable jTableVehiculos;
+    private javax.swing.JTextField jTextFieldBuscarMulta;
+    private javax.swing.JTextField jTextFieldBuscarTraspaso;
     private javax.swing.JTextField jTextFieldBuscarVehiculo;
-    private javax.swing.JPanel menuLateral;
-    private javax.swing.JPanel menuSuperior;
+    private javax.swing.JPanel panelLateral;
     private javax.swing.JPanel panelPrincipal;
     // End of variables declaration//GEN-END:variables
 }

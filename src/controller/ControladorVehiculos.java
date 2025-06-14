@@ -3,6 +3,7 @@ package controller;
 import datastructures.Arbol;
 import datastructures.ArbolBinarioBusqueda;
 import datastructures.ArbolAVL;
+import datastructures.ListaDoble;
 import model.Vehiculo;
 import utils.LectorVehiculos;
 import javax.swing.table.DefaultTableModel;
@@ -14,6 +15,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import model.Multa;
+import utils.LectorMultas;
 
 public class ControladorVehiculos {
     private Arbol<Vehiculo> arbol; // Usamos el tipo genérico Arbol para manejar ambos tipos de árboles
@@ -300,5 +303,16 @@ public class ControladorVehiculos {
     // Limpiar el árbol (resetea a un árbol binario por defecto)
     public void limpiarArbol() {
         arbol = new ArbolBinarioBusqueda<>(); // Reinicia el árbol
+    }
+    
+    // Método para buscar multas de un vehículo por placa
+    public ListaDoble<Multa> buscarMultasPorPlaca(String placa) {
+        ListaDoble<Multa> listaMultas = new ListaDoble<>();
+        
+        // Cargar las multas desde el archivo correspondiente (suponemos que tienes un archivo por cada vehículo)
+        String rutaArchivo = "SIRVE_Datos_Vehiculos_DataSet/" + placa + "_multas.txt"; // Ruta del archivo de multas
+        listaMultas = LectorMultas.cargarMultas(rutaArchivo);  // Usamos el lector para cargar las multas
+        
+        return listaMultas;
     }
 }
