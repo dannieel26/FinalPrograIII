@@ -1,39 +1,62 @@
 package controller;
 
+import datastructures.Arbol;
 import datastructures.ArbolBinarioBusqueda;
+import datastructures.ArbolAVL;
+import model.Vehiculo;
+import utils.LectorVehiculos;
+import javax.swing.table.DefaultTableModel;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import model.Vehiculo;
-import utils.LectorVehiculos;
-import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ControladorVehiculos {
-    private ArbolBinarioBusqueda<Vehiculo> arbol;
+    private Arbol<Vehiculo> arbol; // Usamos el tipo genérico Arbol para manejar ambos tipos de árboles
     private long tiempoInsercion;
     private long tiempoRecorrido;
+    private String tipoArbolConfigurado;  // Nueva variable para controlar el tipo de árbol configurado
 
     public ControladorVehiculos() {
-        arbol = new ArbolBinarioBusqueda<>();
+        arbol = null; // No inicializamos el árbol aún
+        tipoArbolConfigurado = null;  // Inicializamos con el tipo de árbol como null
         tiempoRecorrido = 0;
+    }
+    
+    public String getTipoArbolConfigurado() {
+        return tipoArbolConfigurado;
+    }
+
+    // Cambia el tipo de árbol solo si no está configurado previamente
+    public void configurarTipoArbol(String tipoArbol) {
+        if (!tipoArbol.equals(tipoArbolConfigurado)) {
+            if ("AVL".equals(tipoArbol)) {
+                arbol = new ArbolAVL<>(); // Configurar como árbol AVL
+                tipoArbolConfigurado = "AVL";
+                System.out.println("Arbol configurado como AVL");
+            } else if ("Binario".equals(tipoArbol)) {
+                arbol = new ArbolBinarioBusqueda<>(); // Configurar como árbol binario
+                tipoArbolConfigurado = "Binario";
+                System.out.println("Arbol configurado como Binario");
+            }
+        }
     }
 
     // Método para cargar vehículos desde un archivo
     public void cargarVehiculosDesdeArchivo(String ruta) {
         List<Vehiculo> vehiculos = LectorVehiculos.cargarVehiculos(ruta);
         for (Vehiculo v : vehiculos) {
-            arbol.insertar(v);
+            arbol.insertar(v); // Inserta los vehículos en el árbol
         }
     }
 
     // Método para buscar vehículos por placa
     public List<Vehiculo> buscarVehiculosPorPlaca(String subcadena) {
-        List<Vehiculo> coincidencias = arbol.buscarPorSubcadena(subcadena);
-        tiempoInsercion = arbol.getTiempoOperacion(); // Obtener el tiempo desde el árbol
+        List<Vehiculo> coincidencias = arbol.buscarPorSubcadena(subcadena); // Busca por subcadena en el árbol
+        tiempoInsercion = arbol.getTiempoOperacion(); // Mide el tiempo de la operación
         return coincidencias;
     }
 
@@ -89,8 +112,10 @@ public class ControladorVehiculos {
         }
     }
 
-    // Método para modificar un vehículo
     public String modificarVehiculo(DefaultTableModel modelo, int fila, String departamento) {
+        // Marca el inicio de la operación
+        long inicioModificacion = System.nanoTime();
+
         String placa = modelo.getValueAt(fila, 0).toString().trim();
         String dpi = modelo.getValueAt(fila, 1).toString().trim();
         String nombre = modelo.getValueAt(fila, 2).toString().trim();
@@ -114,7 +139,16 @@ public class ControladorVehiculos {
         arbol.insertar(vehiculoModificado); // Insertar el vehículo modificado
 
         // Modificar el archivo
-        return modificarVehiculoEnArchivo(rutaArchivo, placa, vehiculoModificado);
+        String mensajeArchivo = modificarVehiculoEnArchivo(rutaArchivo, placa, vehiculoModificado);
+
+        // Marca el fin de la operación
+        long finModificacion = System.nanoTime();
+
+        // Calcula el tiempo de modificación
+        tiempoInsercion = finModificacion - inicioModificacion;
+
+        // Retorna el mensaje de modificación
+        return mensajeArchivo;
     }
 
     private boolean vehiculoExisteEnArchivo(String rutaArchivo, String placa) {
@@ -175,7 +209,7 @@ public class ControladorVehiculos {
     // Método para eliminar un vehículo del árbol
     public String eliminarVehiculo(String placa) {
         // Crear un objeto Vehiculo con la placa que queremos eliminar
-        Vehiculo vehiculoAEliminar = new Vehiculo(placa, "", "", "", "", 0, 0, 0); // Se pasa una instancia con la placa
+        Vehiculo vehiculoAEliminar = new Vehiculo(placa, "", "", "", "", 0, 0, 0);
 
         // Llamar al método de eliminar del árbol
         arbol.eliminar(vehiculoAEliminar);
@@ -185,27 +219,30 @@ public class ControladorVehiculos {
 
         return "Vehículo eliminado correctamente.";
     }
-
+    
+    // Método para eliminar un vehículo del archivo
     public String eliminarVehiculoEnArchivo(String rutaArchivo, String placa) {
         try {
             List<String> lineas = new ArrayList<>();
             boolean encontrado = false;
 
+            // Lee las líneas del archivo y elimina la línea con la placa
             try (BufferedReader reader = new BufferedReader(new FileReader(rutaArchivo))) {
                 String linea;
                 while ((linea = reader.readLine()) != null) {
                     if (linea.startsWith(placa + ",")) {
-                        encontrado = true;
+                        encontrado = true; // Encuentra el vehículo
                     } else {
-                        lineas.add(linea);
+                        lineas.add(linea); // Mantiene las líneas que no son la del vehículo a eliminar
                     }
                 }
             }
 
             if (!encontrado) {
-                return "No se encontró el vehículo a eliminar.";
+                return "No se encontró el vehículo a eliminar."; // Si no se encuentra el vehículo
             }
 
+            // Reescribe el archivo sin la línea del vehículo eliminado
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(rutaArchivo, false))) {
                 for (String l : lineas) {
                     writer.write(l);
@@ -251,6 +288,7 @@ public class ControladorVehiculos {
         return tiempoRecorrido;
     }
     
+    // Limpiar el árbol (resetea a un árbol binario por defecto)
     public void limpiarArbol() {
         arbol = new ArbolBinarioBusqueda<>(); // Reinicia el árbol
     }

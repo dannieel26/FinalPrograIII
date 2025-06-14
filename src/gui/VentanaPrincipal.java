@@ -211,7 +211,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
         menuSuperior.add(jButtonLimpiarTablaVehiculos);
 
-        jPanelTiemposVehiculos.setPreferredSize(new java.awt.Dimension(180, 35));
+        jPanelTiemposVehiculos.setPreferredSize(new java.awt.Dimension(200, 35));
         jPanelTiemposVehiculos.setLayout(new javax.swing.BoxLayout(jPanelTiemposVehiculos, javax.swing.BoxLayout.PAGE_AXIS));
         jPanelTiemposVehiculos.add(jLabelTiempoInsercion);
         jPanelTiemposVehiculos.add(jLabelTiempoRecorrido);
@@ -440,32 +440,35 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonLimpiarTablaVehiculosActionPerformed
 
     private void jComboBoxTipoArbolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTipoArbolActionPerformed
-        controlador.limpiarArbol();// Limpia el árbol actual para cargar nuevos datos
-        DefaultTableModel modelo = (DefaultTableModel) jTableVehiculos.getModel();
-        modelo.setRowCount(0); // Limpia la tabla
+        // Solo configuramos el tipo de árbol si es diferente del tipo actual
+        String tipoArbol = (String) jComboBoxTipoArbol.getSelectedItem();
 
-        // Carga los datos del archivo correspondiente al departamento seleccionado
-        cargarDepartamentosSeleccionados(jComboBoxDepartamentos.getSelectedIndex(),false);
+        if (!tipoArbol.equals(controlador.getTipoArbolConfigurado())) {
+            controlador.configurarTipoArbol(tipoArbol); // Configura el tipo de árbol según la selección
+        }
+
+        // Limpia los datos actuales y carga los nuevos según el tipo de árbol seleccionado
+        controlador.limpiarArbol();  // Limpia el árbol actual
+        DefaultTableModel modelo = (DefaultTableModel) jTableVehiculos.getModel();
+        modelo.setRowCount(0); // Limpiar la tabla
+
+        // Cargar los departamentos seleccionados con el nuevo tipo de árbol
+        cargarDepartamentosSeleccionados(jComboBoxDepartamentos.getSelectedIndex(), false);
     }//GEN-LAST:event_jComboBoxTipoArbolActionPerformed
    
     // Cuando se selecciona un tipo de recorrido (Inorden, Preorden, Postorden)
     private void jComboBoxRecorridoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxRecorridoActionPerformed
-        if (jComboBoxRecorrido.getSelectedIndex() == 0){
-                    limpiarTabla();
-                }        
+        if (jComboBoxRecorrido.getSelectedIndex() == 0) {
+            limpiarTabla();
+        }
 
         // Verifica que se haya seleccionado un tipo de árbol y un recorrido válidos
         if (jComboBoxTipoArbol.getSelectedIndex() <= 0 || jComboBoxRecorrido.getSelectedIndex() <= 0) {
             return; // asegura que haya una selección válida
         }
 
-        //Guarda el recorrido seleccionado para usarlo más adelante
+        // Guarda el recorrido seleccionado para usarlo más adelante
         ultimoRecorridoSeleccionado = (String) jComboBoxRecorrido.getSelectedItem();
-
-        // Solo se admite árbol binario por ahora
-        if (!"Binario".equals(jComboBoxTipoArbol.getSelectedItem())) {
-            return;
-        }
 
         // Llama al método que realiza el recorrido, mide el tiempo y llena la tabla
         realizarRecorridoYMostrarTabla();
@@ -586,7 +589,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             jComboBoxDepartamentoInsertar.setSelectedIndex(0);
 
             // Mostrar el tiempo de inserción desde el controlador
-            jLabelTiempoInsercion.setText(String.format("Tiempo de inserción: %.3f ms", controlador.getTiempoInsercion() / 1_000_000.0));
+            jLabelTiempoInsercion.setText(String.format("Tiempo de inserción: %.4f ms", controlador.getTiempoInsercion() / 1_000_000.0));
             jLabelTiempoRecorrido.setText("");
         }
     }//GEN-LAST:event_jButtonInsertarVehiculoActionPerformed
@@ -634,7 +637,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
 
             // Mostrar el tiempo de modificación desde el controlador
-            jLabelTiempoInsercion.setText(String.format("Tiempo de modificación: %.3f ms", controlador.getTiempoInsercion() / 1_000_000.0));
+            jLabelTiempoInsercion.setText(String.format("Tiempo de modificación: %.4f ms", controlador.getTiempoInsercion() / 1_000_000.0));
             jLabelTiempoRecorrido.setText("");  // Limpiar el tiempo de recorrido
         }
     }//GEN-LAST:event_jButtonModificarVehiculoActionPerformed
@@ -651,7 +654,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         //reiniciar el combo box de las opciones y departamentos
         jComboBoxOpcionesVehiculos.setSelectedIndex(0);
-        jComboBoxDepartamentoInsertar.setSelectedIndex(0);
+        jComboBoxDepartamentoModificar.setSelectedIndex(0);
         jComboBoxDepartamentos.setSelectedIndex(0);
         jComboBoxTipoArbol.setSelectedIndex(0);
         jComboBoxRecorrido.setSelectedIndex(0);
@@ -661,21 +664,32 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxDepartamentoModificarActionPerformed
 
-    // Realiza el recorrido seleccionado y actualiza la tabla con los resultados
+    //Realiza el recorrido seleccionado y actualiza la tabla con los resultados
     private void realizarRecorridoYMostrarTabla() {
-        if (ultimoRecorridoSeleccionado != null && jComboBoxTipoArbol.getSelectedIndex() == 1) {
-            // Si no es modificación, entonces procesamos el recorrido
-            List<Vehiculo> lista = switch (ultimoRecorridoSeleccionado) {
-                case "Inorden" -> controlador.obtenerVehiculosInorden();
-                case "Preorden" -> controlador.obtenerVehiculosPreorden();
-                case "Postorden" -> controlador.obtenerVehiculosPostorden();
-                default -> null;
-            };
+        // Verificamos que se haya seleccionado un recorrido y un tipo de árbol válidos
+        if (ultimoRecorridoSeleccionado != null && jComboBoxTipoArbol.getSelectedIndex() > 0) {
+            // Realiza el recorrido dependiendo del tipo de árbol
+            List<Vehiculo> lista = null;
+            if ("Binario".equals(jComboBoxTipoArbol.getSelectedItem()) || "AVL".equals(jComboBoxTipoArbol.getSelectedItem())) {
+                // Según el tipo de recorrido, se llama al método correspondiente
+                switch (ultimoRecorridoSeleccionado) {
+                    case "Inorden":
+                        lista = controlador.obtenerVehiculosInorden();
+                        break;
+                    case "Preorden":
+                        lista = controlador.obtenerVehiculosPreorden();
+                        break;
+                    case "Postorden":
+                        lista = controlador.obtenerVehiculosPostorden();
+                        break;
+                    default:
+                        break;
+                }
+            }
 
             // Solo mostrar tiempo de recorrido si se está haciendo realmente un recorrido
-            double tiempoMilisRecorrido = controlador.getTiempoRecorrido() / 1_000_000.0;
-
             if (lista != null) {
+                double tiempoMilisRecorrido = controlador.getTiempoRecorrido() / 1_000_000.0;
                 llenarTabla(lista);
                 jLabelTiempoRecorrido.setText(String.format("Tiempo de recorrido: %.3f ms", tiempoMilisRecorrido));
             }
@@ -745,17 +759,19 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     
     // Carga los datos desde archivo según el departamento seleccionado
-        private void cargarDepartamentosSeleccionados(int index, boolean esModificacion) {
-        controlador.limpiarArbol();
+    private void cargarDepartamentosSeleccionados(int index, boolean esModificacion) {
+        controlador.limpiarArbol(); // Limpiar el árbol actual
+
+        // Verificar qué tipo de árbol se seleccionó y configurarlo
+        String tipoArbol = (String) jComboBoxTipoArbol.getSelectedItem();
+        controlador.configurarTipoArbol(tipoArbol); // Configura el árbol según la selección (AVL o Binario)
 
         if (index == 0) {
             // Si se selecciona "Todos los departamentos", los carga todos
             long inicio = System.nanoTime();
             for (String departamento : DEPARTAMENTOS) {
                 String ruta = "SIRVE_Datos_Vehiculos_DataSet/" + departamento + "/" + departamento + "_vehiculos.txt";
-                if ("Binario".equals(jComboBoxTipoArbol.getSelectedItem())) {
-                    controlador.cargarVehiculosDesdeArchivo(ruta); // Aquí se insertan los datos
-                }
+                controlador.cargarVehiculosDesdeArchivo(ruta); // Aquí se insertan los datos en el árbol configurado
             }
             long fin = System.nanoTime();
             long tiempoNano = fin - inicio;
@@ -767,30 +783,28 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             // Carga solo el archivo del departamento seleccionado
             String departamento = (String) jComboBoxDepartamentos.getSelectedItem();
             String ruta = "SIRVE_Datos_Vehiculos_DataSet/" + departamento + "/" + departamento + "_vehiculos.txt";
-            if ("Binario".equals(jComboBoxTipoArbol.getSelectedItem())) {
-                long inicio = System.nanoTime();
-                controlador.cargarVehiculosDesdeArchivo(ruta); // Aquí se insertan los datos
-                long fin = System.nanoTime();
+            long inicio = System.nanoTime();
+            controlador.cargarVehiculosDesdeArchivo(ruta); // Inserta los datos en el árbol configurado
+            long fin = System.nanoTime();
 
-                long tiempoNano = fin - inicio;
-                double tiempoMillis = tiempoNano / 1_000_000.0;
-                if (!esModificacion) {
-                    jLabelTiempoInsercion.setText(String.format("Tiempo de carga: %.3f ms", tiempoMillis));
-                }
+            long tiempoNano = fin - inicio;
+            double tiempoMillis = tiempoNano / 1_000_000.0;
+            if (!esModificacion) {
+                jLabelTiempoInsercion.setText(String.format("Tiempo de carga: %.3f ms", tiempoMillis));
             }
         }
     }
         
     private void eliminarVehiculo(String placa) {
-        //obtener el índice seleccionado en el JComboBox
+        // Obtener el índice seleccionado en el JComboBox
         int departamentoIndex = jComboBoxDepartamentos.getSelectedIndex();
 
         long inicio = System.nanoTime();  // Comienza a medir el tiempo
 
-        //verificar si se ha seleccionado un departamento específico o "Todos los departamentos"
+        // Verificar si se ha seleccionado un departamento específico o "Todos los departamentos"
         if (departamentoIndex == 0) {
-            // caso cuando se elige "Todos los departamentos"
-            //Buscar el vehículo en todos los departamentos
+            // Caso cuando se elige "Todos los departamentos"
+            // Buscar el vehículo en todos los departamentos
             boolean encontrado = false;
             for (String departamento : DEPARTAMENTOS) {
                 String ruta = "SIRVE_Datos_Vehiculos_DataSet/" + departamento + "/" + departamento + "_vehiculos.txt";
@@ -807,7 +821,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Vehículo no encontrado en ningún departamento.");
             }
         } else {
-            //Caso cuando se selecciona un departamento específico
+            // Caso cuando se selecciona un departamento específico
             String departamento = (String) jComboBoxDepartamentos.getSelectedItem();
             if (departamento == null || departamento.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Debe seleccionar un departamento primero.");
@@ -816,7 +830,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
             // Construir la ruta del archivo para el departamento seleccionado
             String ruta = "SIRVE_Datos_Vehiculos_DataSet/" + departamento + "/" + departamento + "_vehiculos.txt";
-            // Llamar al método para eliminar el vehículo
+            // Llamar al método para eliminar el vehículo en el archivo
             String mensaje = controlador.eliminarVehiculoEnArchivo(ruta, placa);
             JOptionPane.showMessageDialog(this, mensaje);
         }

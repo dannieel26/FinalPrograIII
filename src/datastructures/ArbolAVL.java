@@ -29,54 +29,26 @@ public class ArbolAVL<T extends Comparable<T>> implements Arbol<T> {
         tiempoOperacion = fin - inicio; //calcula el tiempo de operación
     }
 
-    private Nodo insertarRecursivo(Nodo nodo, T dato) { // Método recursivo para insertar un dato
-        if (nodo == null) { // Si el nodo es null, crea uno nuevo
-            return new Nodo(dato);
+    private Nodo insertarRecursivo(Nodo nodo, T dato) {
+        if (nodo == null) {
+            return new Nodo(dato);  // Si el nodo es nulo, creamos uno nuevo
         }
 
-        int comparacion = dato.compareTo(nodo.dato); // Compara el dato con el nodo actual
-
-        if (comparacion < 0) { // Si el dato es menor, va al subárbol izquierdo
-            nodo.izquierdo = insertarRecursivo(nodo.izquierdo, dato);
-        } else if (comparacion > 0) { // Si el dato es mayor, va al subárbol derecho
+        int comparacion = dato.compareTo(nodo.dato);
+        if (comparacion < 0) {
+            nodo.izquierdo = insertarRecursivo(nodo.izquierdo, dato);  // Insertar en el subárbol izquierdo
+        } else if (comparacion > 0) {
+            nodo.derecho = insertarRecursivo(nodo.derecho, dato);  // Insertar en el subárbol derecho
+        } else {
+            // Si el dato ya existe, también se inserta en el subárbol derecho
             nodo.derecho = insertarRecursivo(nodo.derecho, dato);
-        } else { // Si el dato es igual (duplicado), también lo insertamos en el subárbol derecho (o izquierdo, según preferencia)
-            nodo.derecho = insertarRecursivo(nodo.derecho, dato); // Inserta en el subárbol derecho
         }
 
-        // Actualiza la altura del nodo
+        // Actualizamos la altura del nodo actual
         nodo.altura = 1 + Math.max(altura(nodo.izquierdo), altura(nodo.derecho));
 
-        // Balancea el árbol después de la inserción
-        return balancear(nodo); // Balancea el árbol
-    }
-
-    private Nodo balancear(Nodo nodo) { //balancea el árbol para mantener las propiedades del AVL
-        int balance = obtenerBalance(nodo); //calcula el balance del nodo
-
-        // Rotación simple a la derecha
-        if (balance > 1 && nodo.dato.compareTo(nodo.izquierdo.dato) < 0) {
-            return rotarDerecha(nodo);
-        }
-
-        // Rotación simple a la izquierda
-        if (balance < -1 && nodo.dato.compareTo(nodo.derecho.dato) > 0) {
-            return rotarIzquierda(nodo);
-        }
-
-        // Rotación doble: izquierda luego derecha
-        if (balance > 1 && nodo.dato.compareTo(nodo.izquierdo.dato) > 0) {
-            nodo.izquierdo = rotarIzquierda(nodo.izquierdo);
-            return rotarDerecha(nodo);
-        }
-
-        // Rotación doble: derecha luego izquierda
-        if (balance < -1 && nodo.dato.compareTo(nodo.derecho.dato) < 0) {
-            nodo.derecho = rotarDerecha(nodo.derecho);
-            return rotarIzquierda(nodo);
-        }
-
-        return nodo; //si el árbol está balanceado, retorna el nodo sin cambios
+        // Balanceamos el árbol después de la inserción
+        return balancear(nodo);  // Retornamos el nodo balanceado
     }
 
     private Nodo rotarIzquierda(Nodo nodo) { //realiza una rotación hacia la izquierda
@@ -92,17 +64,52 @@ public class ArbolAVL<T extends Comparable<T>> implements Arbol<T> {
         return nuevoRaiz; //devuelve la nueva raíz
     }
 
-    private Nodo rotarDerecha(Nodo nodo) { //realiza una rotación hacia la derecha
-        Nodo nuevoRaiz = nodo.izquierdo;
-        Nodo aux = nuevoRaiz.derecho;
+    private Nodo rotarDerecha(Nodo nodo) {
+        // Verificamos si el nodo está vacío (null), lo que podría estar causando el error
+        if (nodo == null || nodo.izquierdo == null) {
+            return nodo;  // Si el nodo o su subárbol izquierdo son null, no hacemos nada
+        }
 
-        nuevoRaiz.derecho = nodo;
-        nodo.izquierdo = aux;
+        Nodo nuevoRaiz = nodo.izquierdo;  // La nueva raíz será el subárbol izquierdo
+        Nodo aux = nuevoRaiz.derecho;     // Guardamos el subárbol derecho de la nueva raíz
 
-        nodo.altura = Math.max(altura(nodo.izquierdo), altura(nodo.derecho)) + 1; //actualiza la altura del nodo original
-        nuevoRaiz.altura = Math.max(altura(nuevoRaiz.izquierdo), altura(nuevoRaiz.derecho)) + 1; //actualiza la altura de la nueva raíz
+        nuevoRaiz.derecho = nodo;         // La nueva raíz apunta al nodo actual
+        nodo.izquierdo = aux;             // El nodo actual apunta al subárbol derecho de la nueva raíz
 
-        return nuevoRaiz; //devuelve la nueva raíz
+        // Actualizamos las alturas de los nodos
+        nodo.altura = Math.max(altura(nodo.izquierdo), altura(nodo.derecho)) + 1;
+        nuevoRaiz.altura = Math.max(altura(nuevoRaiz.izquierdo), altura(nuevoRaiz.derecho)) + 1;
+
+        return nuevoRaiz;  // Retorna la nueva raíz que se va a usar en el árbol
+    }
+
+    private Nodo balancear(Nodo nodo) {
+        // Verificamos el balance del nodo
+        int balance = obtenerBalance(nodo);
+
+        // Rotación simple a la derecha
+        if (balance > 1 && obtenerBalance(nodo.izquierdo) >= 0) {
+            return rotarDerecha(nodo);
+        }
+
+        // Rotación doble: izquierda luego derecha
+        if (balance > 1 && obtenerBalance(nodo.izquierdo) < 0) {
+            nodo.izquierdo = rotarIzquierda(nodo.izquierdo);  // Rotación izquierda sobre el subárbol izquierdo
+            return rotarDerecha(nodo);  // Luego rotamos derecha
+        }
+
+        // Rotación simple a la izquierda
+        if (balance < -1 && obtenerBalance(nodo.derecho) <= 0) {
+            return rotarIzquierda(nodo);
+        }
+
+        // Rotación doble: derecha luego izquierda
+        if (balance < -1 && obtenerBalance(nodo.derecho) > 0) {
+            nodo.derecho = rotarDerecha(nodo.derecho);  // Rotación derecha sobre el subárbol derecho
+            return rotarIzquierda(nodo);  // Luego rotamos izquierda
+        }
+
+        return nodo;  // Si ya está balanceado, no se hace nada
     }
 
     private int altura(Nodo nodo) { //devuelve la altura de un nodo
