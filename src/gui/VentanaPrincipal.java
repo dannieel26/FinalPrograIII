@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import model.Vehiculo;
 import model.Multa;
 import model.Traspaso;
+import utils.EncriptadorArbol;
 
 public class VentanaPrincipal extends javax.swing.JFrame {
     
@@ -53,6 +54,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jButtonTraspasos = new javax.swing.JButton();
         jButtonEstadisticas = new javax.swing.JButton();
         jButtonRendimientoAlgoritmico = new javax.swing.JButton();
+        jButtonEncriptar = new javax.swing.JButton();
+        jButtonDesencriptar = new javax.swing.JButton();
         jLabelLogo = new javax.swing.JLabel();
         cardPanelVisualizarEstructura = new javax.swing.JPanel();
         cardVisualizarEstructuraVacio = new javax.swing.JPanel();
@@ -204,6 +207,28 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
         });
         panelLateral.add(jButtonRendimientoAlgoritmico);
+
+        jButtonEncriptar.setBackground(new java.awt.Color(204, 204, 204));
+        jButtonEncriptar.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jButtonEncriptar.setText("ENCRIPTAR");
+        jButtonEncriptar.setPreferredSize(new java.awt.Dimension(150, 36));
+        jButtonEncriptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEncriptarActionPerformed(evt);
+            }
+        });
+        panelLateral.add(jButtonEncriptar);
+
+        jButtonDesencriptar.setBackground(new java.awt.Color(204, 204, 204));
+        jButtonDesencriptar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButtonDesencriptar.setText("DESENCRIPTAR");
+        jButtonDesencriptar.setPreferredSize(new java.awt.Dimension(150, 36));
+        jButtonDesencriptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDesencriptarActionPerformed(evt);
+            }
+        });
+        panelLateral.add(jButtonDesencriptar);
 
         jLabelLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/logoUMG.png"))); // NOI18N
         jLabelLogo.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1027,6 +1052,54 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     cambiarTarjeta("cardSuperiorRendimiento", "cardCentralRendimientoAlgoritmico");
     }//GEN-LAST:event_jButtonRendimientoAlgoritmicoActionPerformed
 
+    private void jButtonEncriptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEncriptarActionPerformed
+        // Verificar que haya un árbol seleccionado
+    if (controlador.getArbol() == null) {
+        JOptionPane.showMessageDialog(this, "No hay árbol seleccionado.");
+        return;
+    }
+
+    // Obtener el tipo de árbol (Binario o AVL)
+    String tipoArbol = controlador.getTipoArbolConfigurado();
+    if (tipoArbol == null || tipoArbol.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Debe seleccionar un tipo de árbol.");
+        return;
+    }
+
+    // Llamar al método de EncriptadorArbol para encriptar y guardar el árbol usando César
+    EncriptadorArbol.encriptarArbol(controlador.getArbol(), tipoArbol);
+
+    // Mensaje de confirmación
+    JOptionPane.showMessageDialog(this, "Árbol encriptado y guardado correctamente.");
+    }//GEN-LAST:event_jButtonEncriptarActionPerformed
+
+    private void jButtonDesencriptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDesencriptarActionPerformed
+    // Verificar que haya un árbol seleccionado
+    if (controlador.getArbol() == null) {
+        JOptionPane.showMessageDialog(this, "No hay árbol seleccionado.");
+        return;
+    }
+
+    // Obtener el tipo de árbol (Binario o AVL)
+    String tipoArbol = controlador.getTipoArbolConfigurado();
+    if (tipoArbol == null || tipoArbol.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Debe seleccionar un tipo de árbol.");
+        return;
+    }
+
+    // Verificar si el archivo está encriptado
+    if (!EncriptadorArbol.esArchivoEncriptado(tipoArbol)) {
+        JOptionPane.showMessageDialog(this, "El archivo no está encriptado.");
+        return;
+    }
+
+    // Llamar al método de EncriptadorArbol para desencriptar
+    EncriptadorArbol.desencriptarArbol(controlador.getArbol(), tipoArbol);
+
+    // Mensaje de confirmación
+    JOptionPane.showMessageDialog(this, "Árbol desencriptado y restaurado correctamente.");
+    }//GEN-LAST:event_jButtonDesencriptarActionPerformed
+
     //Realiza el recorrido seleccionado y actualiza la tabla con los resultados
     private void realizarRecorridoYMostrarTabla() {
         // Verificamos que se haya seleccionado un recorrido y un tipo de árbol válidos
@@ -1335,6 +1408,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton jButtonBuscarMulta;
     private javax.swing.JButton jButtonBuscarTraspaso;
     private javax.swing.JButton jButtonBuscarVehiculo;
+    private javax.swing.JButton jButtonDesencriptar;
+    private javax.swing.JButton jButtonEncriptar;
     private javax.swing.JButton jButtonEstadisticas;
     private javax.swing.JButton jButtonInsertarVehiculo;
     private javax.swing.JButton jButtonLimpiarTablaMultas;
