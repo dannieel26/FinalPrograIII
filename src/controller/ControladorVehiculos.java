@@ -8,6 +8,7 @@ import utils.LectorVehiculos;
 import javax.swing.table.DefaultTableModel;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -95,6 +96,13 @@ public class ControladorVehiculos {
     private void insertarVehiculoEnArchivo(String departamento, Vehiculo vehiculo) {
         String rutaArchivo = "SIRVE_Datos_Vehiculos_DataSet/" + departamento + "/" + departamento + "_vehiculos.txt";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(rutaArchivo, true))) {
+            // Solo agrega un salto de línea si el archivo no está vacío
+            File archivo = new File(rutaArchivo);
+            if (archivo.length() > 0) {
+                writer.write(System.lineSeparator());  // Se asegura de que los vehículos estén separados por una nueva línea
+            }
+
+            // Crear la línea con los datos del vehículo
             String linea = String.format("%s,%s,%s,%s,%s,%d,%d,%d",
                 vehiculo.getPlaca(),
                 vehiculo.getDpi(),
@@ -103,14 +111,15 @@ public class ControladorVehiculos {
                 vehiculo.getModelo(),
                 vehiculo.getAnio(),
                 vehiculo.getCantidadMultas(),
-                vehiculo.getCantidadTraspasos()
-            );
-            writer.newLine();
-            writer.write(linea);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            vehiculo.getCantidadTraspasos()
+        );
+
+        // Escribir la línea en el archivo
+        writer.write(linea);
+    } catch (IOException e) {
+        e.printStackTrace();
     }
+}
 
     public String modificarVehiculo(DefaultTableModel modelo, int fila, String departamento) {
         // Marca el inicio de la operación
