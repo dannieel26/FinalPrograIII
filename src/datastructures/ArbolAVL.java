@@ -7,7 +7,7 @@ import java.util.List;
 import model.Vehiculo;
 
 public class ArbolAVL<T extends Comparable<T>> implements Arbol<T> {
-    private class Nodo { //clase interna Nodo que representa un nodo del arbol
+    class Nodo { //clase interna Nodo que representa un nodo del arbol
         T dato;
         Nodo izquierdo, derecho;
         int altura; //altura del nodo en el árbol
@@ -20,9 +20,14 @@ public class ArbolAVL<T extends Comparable<T>> implements Arbol<T> {
 
     private Nodo raiz; //raíz del árbol
     private long tiempoOperacion; //tiempo de la última operación
+    
+    public ArbolAVL() {
+        System.out.println(">> Creando ARBOL (AVL)");
+    }
 
     @Override
     public void insertar(T dato) { //inserta un dato en el árbol
+        //System.out.println("Insertando en AVL: " + dato);
         long inicio = System.nanoTime(); //marca el inicio de la operación
         raiz = insertarRecursivo(raiz, dato); //llama al método recursivo para insertar
         long fin = System.nanoTime(); //marca el final de la operacion
@@ -122,6 +127,7 @@ public class ArbolAVL<T extends Comparable<T>> implements Arbol<T> {
 
     @Override
     public List<T> buscarPorSubcadena(String subcadena) { //busca elementos que contengan una subcadena
+        System.out.println("Buscando en AVL: " + subcadena);
         long inicio = System.nanoTime(); //marca el inicio de la operación
         List<T> coincidencias = new ArrayList<>(); //lista para almacenar las coincidencias
         buscarPorSubcadenaRecursivo(raiz, subcadena.toLowerCase(), coincidencias); //llama al método recursivo
@@ -146,7 +152,8 @@ public class ArbolAVL<T extends Comparable<T>> implements Arbol<T> {
     }
 
     @Override
-    public void eliminar(T dato) { //elimina un dato del árbol
+    public void eliminar(T dato) { //elimina un dato del 
+        System.out.println("Eliminando en AVL: " + dato);
         long inicio = System.nanoTime(); //marca el inicio de la operación
         raiz = eliminarRecursivo(raiz, dato); //llama al método recursivo para eliminar
         long fin = System.nanoTime(); //marca el final de la operación
@@ -192,6 +199,7 @@ public class ArbolAVL<T extends Comparable<T>> implements Arbol<T> {
 
     @Override
     public List<T> inorden() { //realiza el recorrido inorden
+        System.out.println("Recorriendo InOrden en AVL");
         long inicio = System.nanoTime(); //marca el inicio de la operación
         List<T> resultado = new ArrayList<>(); //lista para almacenar el resultado
         inordenRecursivo(raiz, resultado); //llama al método recursivo
@@ -248,4 +256,28 @@ public class ArbolAVL<T extends Comparable<T>> implements Arbol<T> {
     public long getTiempoOperacion() { //devuelve el tiempo de la última operación
         return tiempoOperacion;
     }
+    
+    Nodo getRaiz() {
+        return raiz;
+    }
+    
+    public int getAltura() {
+        System.out.println("Calculando altura en AVL");
+        return calcularAltura(raiz);
+    }
+
+    // Método recursivo
+    private int calcularAltura(Nodo nodo) {
+        if (nodo == null) {
+            return 0;
+        }
+        int alturaIzq = calcularAltura(nodo.izquierdo);
+        int alturaDer = calcularAltura(nodo.derecho);
+        return 1 + Math.max(alturaIzq, alturaDer);
+    }
+    
+    @Override
+    public void vaciar() {
+            raiz = null;
+        }
 }

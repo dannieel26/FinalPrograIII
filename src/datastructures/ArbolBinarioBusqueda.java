@@ -7,7 +7,7 @@ import java.util.List;
 import model.Vehiculo;
 
 public class ArbolBinarioBusqueda<T extends Comparable<T>> implements Arbol<T> {
-    private class Nodo { //clase interna Nodo que representa un elemento del arbol
+    class Nodo { //clase interna Nodo que representa un elemento del arbol
         T dato;
         Nodo izquierdo;
         Nodo derecho;
@@ -19,9 +19,14 @@ public class ArbolBinarioBusqueda<T extends Comparable<T>> implements Arbol<T> {
 
     private Nodo raiz; //raíz del árbol
     private long tiempoOperacion; //tiempo de la última operacion
+    
+    public ArbolBinarioBusqueda() {
+        System.out.println(">> Creando ARBOL (ABB)");
+    }
 
     @Override
     public void insertar(T dato) { //inserta un dato en el árbol
+        //System.out.println("Insertando en ABB: " + dato);
         long inicio = System.nanoTime(); //marca el inicio de la operación
         raiz = insertarRecursivo(raiz, dato); //llama al método recursivo para insertar
         long fin = System.nanoTime(); //marca el final de la operacion
@@ -48,6 +53,7 @@ public class ArbolBinarioBusqueda<T extends Comparable<T>> implements Arbol<T> {
 
     @Override
     public List<T> buscarPorSubcadena(String subcadena) { //busca elementos por subcadena
+        System.out.println("Buscando en ABB: " + subcadena);
         long inicio = System.nanoTime(); //marca el inicio de la operación
         List<T> coincidencias = new ArrayList<>(); //lista de coincidencias
         buscarPorSubcadenaRecursivo(raiz, subcadena.toLowerCase(), coincidencias); //llama al método recursivo
@@ -73,6 +79,7 @@ public class ArbolBinarioBusqueda<T extends Comparable<T>> implements Arbol<T> {
 
     @Override
     public void eliminar(T dato) { // Elimina un dato del árbol
+        System.out.println("Eliminando en ABB: " + dato);
         long inicio = System.nanoTime(); // Marca el inicio de la operación
         raiz = eliminarRecursivo(raiz, dato); // Llama al método recursivo para eliminar
         long fin = System.nanoTime(); // Marca el final de la operación
@@ -117,6 +124,7 @@ public class ArbolBinarioBusqueda<T extends Comparable<T>> implements Arbol<T> {
 
     @Override
     public List<T> inorden() { //realiza el recorrido inorden
+        System.out.println("Recorriendo InOrden en ABB");
         long inicio = System.nanoTime(); //marca el inicio de la operación
         List<T> resultado = new ArrayList<>(); //lista para almacenar el resultado
         inordenRecursivo(raiz, resultado); //llama al método recursivo
@@ -172,5 +180,29 @@ public class ArbolBinarioBusqueda<T extends Comparable<T>> implements Arbol<T> {
     @Override
     public long getTiempoOperacion() { //devuelve el tiempo de la última operación
         return tiempoOperacion;
+    }
+    
+    Nodo getRaiz() {
+        return raiz;
+    }
+    
+    public int getAltura() {
+        System.out.println("Calculando altura en ABB");
+        return calcularAltura(raiz);
+    }
+
+    // Método recursivo
+    private int calcularAltura(Nodo nodo) {
+        if (nodo == null) {
+            return 0;
+        }
+        int alturaIzq = calcularAltura(nodo.izquierdo);
+        int alturaDer = calcularAltura(nodo.derecho);
+        return 1 + Math.max(alturaIzq, alturaDer);
+    }
+
+    @Override
+    public void vaciar() {
+        raiz = null;
     }
 }

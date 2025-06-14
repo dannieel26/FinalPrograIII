@@ -9,6 +9,8 @@ import javax.swing.table.DefaultTableModel;
 import datastructures.ListaCircular;
 import datastructures.ListaDoble;
 import java.awt.CardLayout;
+import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import model.Vehiculo;
 import model.Multa;
@@ -25,6 +27,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private ControladorVehiculos controlador = new ControladorVehiculos();
     private ControladorMultas controladorMultas = new ControladorMultas();
     private ControladorTraspasos controladorTraspasos = new ControladorTraspasos();
+    private boolean isInicializando = false;
 
 
     public VentanaPrincipal() {
@@ -45,7 +48,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jButtonVehiculos = new javax.swing.JButton();
         jButtonMultas = new javax.swing.JButton();
         jButtonTraspasos = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        jLabelLogo = new javax.swing.JLabel();
+        cardPanelVisualizarEstructura = new javax.swing.JPanel();
+        cardVisualizarEstructuraVacio = new javax.swing.JPanel();
+        cardVisualizarEstructura = new javax.swing.JPanel();
+        jButtonVisualizarEstructura = new javax.swing.JButton();
+        jLabelVisualizacionArbol = new javax.swing.JLabel();
         panelPrincipal = new javax.swing.JPanel();
         cardPanelSuperior = new javax.swing.JPanel();
         cardSuperiorVehiculos = new javax.swing.JPanel();
@@ -156,8 +164,41 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
         panelLateral.add(jButtonTraspasos);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/logoUMG.png"))); // NOI18N
-        panelLateral.add(jLabel1);
+        jLabelLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/logoUMG.png"))); // NOI18N
+        jLabelLogo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabelLogoMouseClicked(evt);
+            }
+        });
+        panelLateral.add(jLabelLogo);
+
+        cardPanelVisualizarEstructura.setBackground(new java.awt.Color(51, 51, 51));
+        cardPanelVisualizarEstructura.setPreferredSize(new java.awt.Dimension(150, 70));
+        cardPanelVisualizarEstructura.setLayout(new java.awt.CardLayout());
+
+        cardVisualizarEstructuraVacio.setBackground(new java.awt.Color(51, 51, 51));
+        cardPanelVisualizarEstructura.add(cardVisualizarEstructuraVacio, "cardVisualizarEstructuraVacio");
+
+        cardVisualizarEstructura.setBackground(new java.awt.Color(51, 51, 51));
+        cardVisualizarEstructura.setMinimumSize(new java.awt.Dimension(270, 60));
+
+        jButtonVisualizarEstructura.setBackground(new java.awt.Color(204, 204, 204));
+        jButtonVisualizarEstructura.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
+        jButtonVisualizarEstructura.setText("<html>VISUALIZAR<br>ESTRUCTURA</html>");
+        jButtonVisualizarEstructura.setPreferredSize(new java.awt.Dimension(150, 60));
+        jButtonVisualizarEstructura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonVisualizarEstructuraActionPerformed(evt);
+            }
+        });
+        cardVisualizarEstructura.add(jButtonVisualizarEstructura);
+
+        cardPanelVisualizarEstructura.add(cardVisualizarEstructura, "cardVisualizarEstructura");
+
+        panelLateral.add(cardPanelVisualizarEstructura);
+
+        jLabelVisualizacionArbol.setPreferredSize(new java.awt.Dimension(150, 150));
+        panelLateral.add(jLabelVisualizacionArbol);
 
         getContentPane().add(panelLateral, java.awt.BorderLayout.WEST);
 
@@ -257,11 +298,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jTextFieldBuscarMulta.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jTextFieldBuscarMulta.setPreferredSize(new java.awt.Dimension(100, 30));
-        jTextFieldBuscarMulta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldBuscarMultaActionPerformed(evt);
-            }
-        });
         cardSuperiorMultas.add(jTextFieldBuscarMulta);
 
         jButtonBuscarMulta.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -294,11 +330,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jTextFieldBuscarTraspaso.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jTextFieldBuscarTraspaso.setPreferredSize(new java.awt.Dimension(100, 30));
-        jTextFieldBuscarTraspaso.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldBuscarTraspasoActionPerformed(evt);
-            }
-        });
         cardSuperiorTraspasos.add(jTextFieldBuscarTraspaso);
 
         jButtonBuscarTraspaso.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -388,11 +419,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jComboBoxDepartamentoInsertar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione un departamento" }));
         jComboBoxDepartamentoInsertar.setPreferredSize(new java.awt.Dimension(150, 40));
-        jComboBoxDepartamentoInsertar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxDepartamentoInsertarActionPerformed(evt);
-            }
-        });
         jPanel5.add(jComboBoxDepartamentoInsertar);
 
         jButtonInsertarVehiculo.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -456,11 +482,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jComboBoxDepartamentoModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione un departamento" }));
         jComboBoxDepartamentoModificar.setPreferredSize(new java.awt.Dimension(150, 40));
-        jComboBoxDepartamentoModificar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxDepartamentoModificarActionPerformed(evt);
-            }
-        });
         jPanel8.add(jComboBoxDepartamentoModificar);
 
         jButtonModificarVehiculo.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -581,15 +602,16 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     // Cuando se selecciona un departamento en el ComboBox
     private void jComboBoxDepartamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxDepartamentosActionPerformed
-        controlador.limpiarArbol();// Limpia el árbol actual para cargar nuevos datos
-        DefaultTableModel modelo = (DefaultTableModel) jTableVehiculos.getModel();
-        modelo.setRowCount(0); // Limpia la tabla
+        if (isInicializando) return;
 
-        // Carga los datos del archivo correspondiente al departamento seleccionado
-        cargarDepartamentosSeleccionados(jComboBoxDepartamentos.getSelectedIndex(),false);
-        
-        // Muestra los datos recorriendo el árbol (si ya se seleccionó un recorrido)
-        realizarRecorridoYMostrarTabla();
+        isInicializando = true;
+        jComboBoxTipoArbol.setSelectedIndex(0); // reinicia tipoArbol
+        jComboBoxRecorrido.setSelectedIndex(0); // reinicia recorrido
+        limpiarTabla();
+        controlador.limpiarArbol();
+        isInicializando = false;
+
+        System.out.println("Esperando que seleccione un tipo de arbol");
     }//GEN-LAST:event_jComboBoxDepartamentosActionPerformed
 
     // Botón para limpiar solo la tabla (no borra los datos del árbol)
@@ -598,37 +620,37 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonLimpiarTablaVehiculosActionPerformed
 
     private void jComboBoxTipoArbolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTipoArbolActionPerformed
-        // Solo configuramos el tipo de árbol si es diferente del tipo actual
+        if (isInicializando) return;
+
         String tipoArbol = (String) jComboBoxTipoArbol.getSelectedItem();
 
-        if (!tipoArbol.equals(controlador.getTipoArbolConfigurado())) {
-            controlador.configurarTipoArbol(tipoArbol); // Configura el tipo de árbol según la selección
+        isInicializando = true;
+        jComboBoxRecorrido.setSelectedIndex(0); // reinicia recorrido
+        limpiarTabla();
+        controlador.limpiarArbol();
+        isInicializando = false;
+
+        if (!"Binario".equals(tipoArbol) && !"AVL".equals(tipoArbol)) {
+            actualizarVisualizacionEstructura();
+            return;
         }
 
-        // Limpia los datos actuales y carga los nuevos según el tipo de árbol seleccionado
-        controlador.limpiarArbol();  // Limpia el árbol actual
-        DefaultTableModel modelo = (DefaultTableModel) jTableVehiculos.getModel();
-        modelo.setRowCount(0); // Limpiar la tabla
-
-        // Cargar los departamentos seleccionados con el nuevo tipo de árbol
+        controlador.configurarTipoArbol(tipoArbol);
         cargarDepartamentosSeleccionados(jComboBoxDepartamentos.getSelectedIndex(), false);
+        actualizarVisualizacionEstructura();
     }//GEN-LAST:event_jComboBoxTipoArbolActionPerformed
    
     // Cuando se selecciona un tipo de recorrido (Inorden, Preorden, Postorden)
     private void jComboBoxRecorridoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxRecorridoActionPerformed
-        if (jComboBoxRecorrido.getSelectedIndex() == 0) {
+        if (isInicializando) return;
+
+        if (jComboBoxTipoArbol.getSelectedIndex() <= 0 ||
+            jComboBoxRecorrido.getSelectedIndex() <= 0) {
             limpiarTabla();
+            return;
         }
 
-        // Verifica que se haya seleccionado un tipo de árbol y un recorrido válidos
-        if (jComboBoxTipoArbol.getSelectedIndex() <= 0 || jComboBoxRecorrido.getSelectedIndex() <= 0) {
-            return; // asegura que haya una selección válida
-        }
-
-        // Guarda el recorrido seleccionado para usarlo más adelante
         ultimoRecorridoSeleccionado = (String) jComboBoxRecorrido.getSelectedItem();
-
-        // Llama al método que realiza el recorrido, mide el tiempo y llena la tabla
         realizarRecorridoYMostrarTabla();
     }//GEN-LAST:event_jComboBoxRecorridoActionPerformed
 
@@ -712,10 +734,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jComboBoxOpcionesVehiculosActionPerformed
 
-    private void jComboBoxDepartamentoInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxDepartamentoInsertarActionPerformed
-        
-    }//GEN-LAST:event_jComboBoxDepartamentoInsertarActionPerformed
-
     // Método que se ejecuta al presionar el botón de "Insertar Vehiculo"
     private void jButtonInsertarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertarVehiculoActionPerformed
         int fila = 0; // Es la única fila donde se insertan los datos
@@ -764,13 +782,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jLabelInsertarMensajes.setText("");
         jLabelTiempoInsercion.setText("");
         jLabelTiempoRecorrido.setText("");
-
+        
+        isInicializando = true; // empieza a ignorar eventos
         //reiniciar el combo box de las opciones y departamentos
         jComboBoxOpcionesVehiculos.setSelectedIndex(0);
         jComboBoxDepartamentoInsertar.setSelectedIndex(0);
         jComboBoxDepartamentos.setSelectedIndex(0);
         jComboBoxTipoArbol.setSelectedIndex(0);
         jComboBoxRecorrido.setSelectedIndex(0);
+        isInicializando = false; // ya puede procesar eventos otra vez
     }//GEN-LAST:event_jButtonRegresarInsertarVehiculoActionPerformed
 
     private void jButtonModificarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonModificarVehiculoActionPerformed
@@ -822,14 +842,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jComboBoxRecorrido.setSelectedIndex(0);
     }//GEN-LAST:event_jButtonRegresarModificarVehiculoActionPerformed
 
-    private void jComboBoxDepartamentoModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxDepartamentoModificarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxDepartamentoModificarActionPerformed
-
-    private void jTextFieldBuscarMultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldBuscarMultaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldBuscarMultaActionPerformed
-
     private void jButtonBuscarMultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarMultaActionPerformed
         String placa = jTextFieldBuscarMulta.getText().trim();
 
@@ -864,10 +876,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         limpiarTablaMultas();
     }//GEN-LAST:event_jButtonLimpiarTablaMultasActionPerformed
 
-    private void jTextFieldBuscarTraspasoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldBuscarTraspasoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldBuscarTraspasoActionPerformed
-
     private void jButtonBuscarTraspasoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarTraspasoActionPerformed
     String placa = jTextFieldBuscarTraspaso.getText().trim();
 
@@ -899,6 +907,23 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private void jButtonLimpiarTablaTraspasosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLimpiarTablaTraspasosActionPerformed
         limpiarTablaTraspasos();
     }//GEN-LAST:event_jButtonLimpiarTablaTraspasosActionPerformed
+
+    private void jLabelLogoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelLogoMouseClicked
+        panelPrincipal.removeAll();
+        panelPrincipal.revalidate();
+        panelPrincipal.repaint();// TODO add your handling code here:
+    }//GEN-LAST:event_jLabelLogoMouseClicked
+
+    private void jButtonVisualizarEstructuraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVisualizarEstructuraActionPerformed
+        String tipoArbol = (String) jComboBoxTipoArbol.getSelectedItem(); // "Binario" o "AVL"
+        BufferedImage img = controlador.generarVisualizacionArbol(tipoArbol);
+        if (img != null) {
+            ImageIcon icon = new ImageIcon(img);
+            jLabelVisualizacionArbol.setIcon(icon); // Suponiendo que tienes un JLabel en tu UI
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo generar la imagen del árbol.");
+        }
+    }//GEN-LAST:event_jButtonVisualizarEstructuraActionPerformed
 
     //Realiza el recorrido seleccionado y actualiza la tabla con los resultados
     private void realizarRecorridoYMostrarTabla() {
@@ -1026,43 +1051,44 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         // Asigna el modelo al comboBox
         comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(opcionesDepartamentos));
     }
-
     
-    // Carga los datos desde archivo según el departamento seleccionado
     private void cargarDepartamentosSeleccionados(int index, boolean esModificacion) {
-        controlador.limpiarArbol(); // Limpiar el árbol actual
-
-        // Verificar qué tipo de árbol se seleccionó y configurarlo
         String tipoArbol = (String) jComboBoxTipoArbol.getSelectedItem();
-        controlador.configurarTipoArbol(tipoArbol); // Configura el árbol según la selección (AVL o Binario)
+        if (!"Binario".equals(tipoArbol) && !"AVL".equals(tipoArbol)) {
+            System.out.println("Seleccione primero un tipo de arbol (Binario o AVL)");
+            return;
+        }
+
+        // Verifica si el tipo actual es diferente al configurado
+        if (!tipoArbol.equals(controlador.getTipoArbolConfigurado())) {
+            controlador.configurarTipoArbol(tipoArbol);
+        } 
+
+        controlador.limpiarArbol();
 
         if (index == 0) {
-            // Si se selecciona "Todos los departamentos", los carga todos
             long inicio = System.nanoTime();
             for (String departamento : DEPARTAMENTOS) {
                 String ruta = "SIRVE_Datos_Vehiculos_DataSet/" + departamento + "/" + departamento + "_vehiculos.txt";
-                controlador.cargarVehiculosDesdeArchivo(ruta); // Aquí se insertan los datos en el árbol configurado
+                controlador.cargarVehiculosDesdeArchivo(ruta);
             }
             long fin = System.nanoTime();
-            long tiempoNano = fin - inicio;
-            double tiempoMillis = tiempoNano / 1_000_000.0;
             if (!esModificacion) {
-                jLabelTiempoInsercion.setText(String.format("Tiempo de carga: %.3f ms", tiempoMillis));
+                jLabelTiempoInsercion.setText(String.format("Tiempo de carga: %.3f ms", (fin - inicio) / 1_000_000.0));
             }
         } else {
-            // Carga solo el archivo del departamento seleccionado
             String departamento = (String) jComboBoxDepartamentos.getSelectedItem();
             String ruta = "SIRVE_Datos_Vehiculos_DataSet/" + departamento + "/" + departamento + "_vehiculos.txt";
             long inicio = System.nanoTime();
-            controlador.cargarVehiculosDesdeArchivo(ruta); // Inserta los datos en el árbol configurado
+            controlador.cargarVehiculosDesdeArchivo(ruta);
             long fin = System.nanoTime();
-
-            long tiempoNano = fin - inicio;
-            double tiempoMillis = tiempoNano / 1_000_000.0;
             if (!esModificacion) {
-                jLabelTiempoInsercion.setText(String.format("Tiempo de carga: %.3f ms", tiempoMillis));
+                jLabelTiempoInsercion.setText(String.format("Tiempo de carga: %.3f ms", (fin - inicio) / 1_000_000.0));
             }
         }
+
+        int altura = controlador.getAlturaArbolActual();
+        System.out.println("Altura: " + altura);
     }
         
     private void eliminarVehiculo(String placa) {
@@ -1118,6 +1144,17 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         // Limpiar la tabla y recargar los datos después de la eliminación
         limpiarTabla();
         cargarDepartamentosSeleccionados(jComboBoxDepartamentos.getSelectedIndex(), false);
+    }
+    
+    private void actualizarVisualizacionEstructura() {
+        CardLayout cl = (CardLayout) cardPanelVisualizarEstructura.getLayout();
+        String tipoSeleccionado = (String) jComboBoxTipoArbol.getSelectedItem();
+
+        if ("Binario".equals(tipoSeleccionado) || "AVL".equals(tipoSeleccionado)) {
+            cl.show(cardPanelVisualizarEstructura, "cardVisualizarEstructura");
+        } else {
+            cl.show(cardPanelVisualizarEstructura, "cardVisualizarEstructuraVacio");
+        }
     }
 
     //devuelve la ruta del archivo seleccionado en el combo box departamento
@@ -1191,9 +1228,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JPanel cardOpcionBuscarVehiculo;
     private javax.swing.JPanel cardPanelCentral;
     private javax.swing.JPanel cardPanelSuperior;
+    private javax.swing.JPanel cardPanelVisualizarEstructura;
     private javax.swing.JPanel cardSuperiorMultas;
     private javax.swing.JPanel cardSuperiorTraspasos;
     private javax.swing.JPanel cardSuperiorVehiculos;
+    private javax.swing.JPanel cardVisualizarEstructura;
+    private javax.swing.JPanel cardVisualizarEstructuraVacio;
     private javax.swing.JButton jButtonBuscarMulta;
     private javax.swing.JButton jButtonBuscarTraspaso;
     private javax.swing.JButton jButtonBuscarVehiculo;
@@ -1207,18 +1247,19 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton jButtonRegresarModificarVehiculo;
     private javax.swing.JButton jButtonTraspasos;
     private javax.swing.JButton jButtonVehiculos;
+    private javax.swing.JButton jButtonVisualizarEstructura;
     private javax.swing.JComboBox<String> jComboBoxDepartamentoInsertar;
     private javax.swing.JComboBox<String> jComboBoxDepartamentoModificar;
     private javax.swing.JComboBox<String> jComboBoxDepartamentos;
     private javax.swing.JComboBox<String> jComboBoxOpcionesVehiculos;
     private javax.swing.JComboBox<String> jComboBoxRecorrido;
     private javax.swing.JComboBox<String> jComboBoxTipoArbol;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabelInsertarMensajes;
+    private javax.swing.JLabel jLabelLogo;
     private javax.swing.JLabel jLabelMensajesMultas;
     private javax.swing.JLabel jLabelMensajesTraspasos;
     private javax.swing.JLabel jLabelModificarMensajes;
@@ -1226,6 +1267,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelTiempoMultas;
     private javax.swing.JLabel jLabelTiempoRecorrido;
     private javax.swing.JLabel jLabelTiempoTraspasos;
+    private javax.swing.JLabel jLabelVisualizacionArbol;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;

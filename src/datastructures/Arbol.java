@@ -12,4 +12,5 @@ public interface Arbol<T extends Comparable<T>> {
     List<T> preorden(); //recorrido preorden del árbol
     List<T> postorden(); //recorrido postorden del árbol
     long getTiempoOperacion(); //devuelve el tiempo de operación realizado
+    void vaciar();
 }

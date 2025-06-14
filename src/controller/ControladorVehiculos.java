@@ -4,6 +4,7 @@ import datastructures.Arbol;
 import datastructures.ArbolBinarioBusqueda;
 import datastructures.ArbolAVL;
 import datastructures.ListaDoble;
+import java.awt.image.BufferedImage;
 import model.Vehiculo;
 import utils.LectorVehiculos;
 import javax.swing.table.DefaultTableModel;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Multa;
+import datastructures.ArbolVisualizer;
 import utils.LectorMultas;
 
 public class ControladorVehiculos {
@@ -40,11 +42,9 @@ public class ControladorVehiculos {
             if ("AVL".equals(tipoArbol)) {
                 arbol = new ArbolAVL<>(); // Configurar como árbol AVL
                 tipoArbolConfigurado = "AVL";
-                System.out.println("Arbol configurado como AVL");
             } else if ("Binario".equals(tipoArbol)) {
                 arbol = new ArbolBinarioBusqueda<>(); // Configurar como árbol binario
                 tipoArbolConfigurado = "Binario";
-                System.out.println("Arbol configurado como Binario");
             }
         }
     }
@@ -300,9 +300,10 @@ public class ControladorVehiculos {
         return tiempoRecorrido;
     }
     
-    // Limpiar el árbol (resetea a un árbol binario por defecto)
     public void limpiarArbol() {
-        arbol = new ArbolBinarioBusqueda<>(); // Reinicia el árbol
+        if (arbol != null) {
+            arbol.vaciar();
+        }
     }
     
     // Método para buscar multas de un vehículo por placa
@@ -315,4 +316,29 @@ public class ControladorVehiculos {
         
         return listaMultas;
     }
+    
+    public BufferedImage generarVisualizacionArbol(String tipoArbol) {
+        try {
+            String rutaDot = "arbol.dot";
+            String rutaImagen = "arbol.png";
+            ArbolVisualizer.generarArchivoDot(arbol, tipoArbol, rutaDot);
+            ArbolVisualizer.generarImagenGraphviz(rutaDot, rutaImagen);
+            return ArbolVisualizer.cargarImagen(rutaImagen);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    public int getAlturaArbolActual() {
+    // Si tu árbol tiene el método getAltura()
+    // (tanto AVL como ABB deberían tenerlo)
+    if (arbol instanceof ArbolBinarioBusqueda) {
+        return ((ArbolBinarioBusqueda<Vehiculo>) arbol).getAltura();
+    } else if (arbol instanceof ArbolAVL) {
+        return ((ArbolAVL<Vehiculo>) arbol).getAltura();
+    }
+    return 0;
+}
+
 }
